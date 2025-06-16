@@ -1,0 +1,108 @@
+@import "../../assets/styles/shared.scss";
+
+.bottomFooter{
+    position: relative;
+    background-color: $headerBg;
+    padding: 60px 0;
+    .footerRow{
+        @include justify-space-between;
+        .footerClm{
+            width: 20%;
+            h2{
+                font-size: 25px;
+                color: $blackColor;
+                font-weight: 600;
+            }
+            &.footerSocialMediaClm{
+                width: 20%;
+            }
+            &.footerNewsLetterClm{
+                width: 33%;
+            }
+        }
+    }
+    .footerMenu{
+        li{
+            font-size: 16px;
+            color: $blackColor;
+            font-weight: 500;
+            margin-top: 20px;
+            a{
+                text-decoration: none;
+                color: $blackColor;
+                &:hover{
+                    color: $secondaryColor;
+                }
+            }
+        }
+    }
+    .footerSocialMedia{
+        @include flex;
+        margin-top: 20px;
+        li{
+            margin-left: 10px;
+            &:first-child{
+                margin-left: 0;
+            }
+            a{
+                display: inline-block;
+                width: 40px;
+                height: 40px;
+                background-color: $socialMediaBgColor;
+                border-radius: 100%;
+                text-align: center;
+                line-height: 36px;
+                color: $whiteColor;
+                &:hover{
+                    background-color: $secondaryColor;
+                }
+            }
+        }
+    }
+    .footerNewsLetter{
+        position: relative;
+        margin-top: 20px;
+        input{
+            width: 100%;
+            height: 55px;
+            background-color: $whiteColor;
+            border: 1px solid $borderColor;
+            border-radius: 35px;
+            padding: 10px 145px 10px 25px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .submitBtn{
+            position: absolute;
+            top: 49px;
+            right: 3px;
+            height: 48px;
+            background-color: $secondaryColor;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 35px;
+            font-size: 19px;
+            color: $whiteColor;
+            font-weight: 600;
+            cursor: pointer;
+            @include transition;
+            &:hover{
+                background-color: $copyrightBg;
+            }
+        }
+    }
+}
+
+
+
+.copyrightPrt{
+    position: relative;
+    background-color: $copyrightBg;
+    padding: 25px 0;
+    text-align: center;
+    p{
+        font-size: 14px;
+        color: $whiteColor;
+        margin: 0;
+    }
+}

@@ -6,7 +6,7 @@ import { AppDispatch } from "../../../store";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import alert from "../../../services/alert";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   GoogleOAuthProvider,
   GoogleLogin,
@@ -19,6 +19,9 @@ import {
   SendOtpResponse,
 } from "../../../interfaces/authInterface";
 import { jwtDecode } from "jwt-decode";
+import Header from "../../../components/header/header";
+import Footer from "../../../components/footer/footer";
+import styles from './login.module.scss';
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -96,72 +99,67 @@ const Login: React.FC = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={loginSchema}
-        onSubmit={(value) => handleSubmit(value)}
-      >
-        <Form>
-          <div
-            style={{
-              padding: "20px",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              maxWidth: "400px",
-              margin: "50px auto",
-            }}
+    <>
+    <Header/>
+
+    <div className={styles.loginBodyPrt}>
+      <div className={styles.container}>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={loginSchema}
+            onSubmit={(value) => handleSubmit(value)}
           >
-            <h2>Login</h2>
-            <div style={{ marginBottom: "15px" }}>
-              <label
-                htmlFor="email"
-                style={{ display: "block", marginBottom: "5px" }}
-              >
-                Email:
-              </label>
-              <Field
-                name="email"
-                type="email"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  boxSizing: "border-box",
-                }}
-              />
-              <ErrorMessage name="email" component="div" />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: "100%",
-                padding: "10px",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                marginBottom: "15px",
-              }}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
+            <Form>
+              <div className={styles.loginFormBox}>
+                <div className={styles.loginBoxHdn}>
+                  <h2>Sign in</h2>
+                  <p>Choose how you'd like to sign in</p>
+                </div>
+                <div className={styles.googleSign}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleFailure}
+                  />
+                </div>
+                <div className={styles.loginOption}>
+                  <p>or</p>
+                </div>
+                <div className={styles.loginFormField}>
+                  <label
+                    htmlFor="email"
+                  >
+                    Email Address
+                  </label>
+                  <Field
+                    name="email"
+                    type="email"
+                    placeholder="Enter Your Email Address"
+                  />
+                  <ErrorMessage name="email" component="p" className={styles.loginError} />
 
-            <div style={{ textAlign: "center", marginBottom: "15px" }}>
-              <p>- OR -</p>
-            </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={styles.submitBtn}
+                  >
+                    {loading ? "Logging in..." : "Continue"}
+                  </button>
+                </div>
+                <p className={styles.loginTermsService}>
+                  <Link to="#">
+                    Policies & Terms of Service
+                  </Link>
+                </p>
+              </div>
+            </Form>
+          </Formik>
+        </GoogleOAuthProvider>
+      </div>
+    </div>
 
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleFailure}
-              />
-            </div>
-          </div>
-        </Form>
-      </Formik>
-    </GoogleOAuthProvider>
+    <Footer/>
+    </>
   );
 };
 
