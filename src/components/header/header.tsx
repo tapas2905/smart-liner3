@@ -1,0 +1,40 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import styles from './header.module.scss';
+
+const Header: React.FC  = () => {
+
+  return (
+    <div className={styles.header}>
+      <div className={styles.container}>
+        <div className={styles.headerRow}>
+          <div className={styles.headerLogoPrt}>
+            <Link to="/"><img src='images/logo.svg' alt='Logo' /></Link>
+          </div>
+          <div className={styles.headerMenuPrt}>
+            <ul>
+              <li>
+                <Link to={'#'}>Home</Link>
+              </li>
+              <li>
+                <Link to={'#'}>Product List</Link>
+              </li>
+              <li>
+                <Link to={'#'}>Shop Online</Link>
+              </li>
+            </ul>
+          </div>
+          <div className={styles.hdrSignBtn}>
+            <Link to={'#'}>
+              <img src='images/sign-user-icon.svg' alt='sign user icon' />
+              <span>Sign In</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+};
+
+export default Header;

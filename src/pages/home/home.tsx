@@ -23,7 +23,7 @@ const Home: React.FC = () => {
     try {
       const res = await api.get("product/list");
       if (res.status === 200) {
-        console.log(res.data);
+        // console.log(res.data);
         
         // setProducts(res.data.data);
       }
