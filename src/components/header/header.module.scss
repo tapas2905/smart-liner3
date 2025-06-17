@@ -37,22 +37,73 @@
             }
         }
     }
-    .hdrSignBtn{
+    .hdrSignInPrt{
+        position: relative;
         margin-left: 40px;
-        a{
-            display: inline-block;
-            background-color: $secondaryColor;
-            font-size: 18px;
-            color: $whiteColor;
-            font-weight: 600;
-            padding: 9px 18px;
-            border-radius: 35px;
-            text-decoration: none;
-            &:hover{
-                background-color: $copyrightBg;
+        .hdrSignBtn{
+            a{
+                display: inline-block;
+                background-color: $secondaryColor;
+                font-size: 18px;
+                color: $whiteColor;
+                font-weight: 600;
+                padding: 9px 18px;
+                border-radius: 35px;
+                text-decoration: none;
+                &:hover{
+                    background-color: $copyrightBgColor;
+                }
+                i{
+                    margin-right: 8px;
+                }
             }
-            img{
-                margin-right: 7px;
+        }
+        .hdrProfileDropdown{
+            position: absolute;
+            width: 150px;
+            top: 55px;
+            right: 0;
+            background-color: $whiteColor;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            z-index: 1;
+            &::before{
+                position: absolute;
+                font-family: Fontawesome;
+                font-size: 28px;
+                color: $whiteColor;
+                content: '\f0de';
+                width: 17px;
+                height: 10px;
+                top: -11px;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+            }
+            ul{
+                li{
+                    margin: 10px 0;
+                    font-size: 18px;
+                    font-weight: 500;
+                    border-bottom: 1px solid $borderColor;
+                    &:last-child{
+                        border-bottom: none;
+                    }
+                    a{
+                        padding: 10px 15px;
+                        display: inline-block;
+                        text-decoration: none;
+                        color: $blackColor;
+                        width: 100%;
+                        &:hover{
+                            color: $secondaryColor;
+                        }
+                        i{
+                            margin-right: 12px;
+                            vertical-align: middle;
+                        }
+                    }
+                }
             }
         }
     }

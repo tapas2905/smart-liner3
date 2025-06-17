@@ -5,6 +5,7 @@ import ProtectedRoute from "./protectedRoute";
 import AuthRedirect from "./authRedirect";
 import Home from "../pages/home/home";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
+import ProductList from "../pages/product-list/productList";
 
 function AppRouter() {
   return (
@@ -13,6 +14,7 @@ function AppRouter() {
         <Route element={<AuthRedirect />}>
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/product-list" element={<ProductList />} />
         </Route>
 
         {/* ProtectedRoute for routes that require authentication */}
