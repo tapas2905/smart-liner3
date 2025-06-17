@@ -19,7 +19,6 @@ import {
   SendOtpResponse,
 } from "../../../interfaces/authInterface";
 import { jwtDecode } from "jwt-decode";
-import { AxiosError } from "axios";
 import Header from "../../../components/header/header";
 import Footer from "../../../components/footer/footer";
 import styles from './login.module.scss';
@@ -44,17 +43,7 @@ const Login: React.FC = () => {
         );
       }
     } catch (err: any) {
-      const axiosError = err as AxiosError;
-      console.log(err);
-      if(axiosError.response) {
-         const errorMessage =
-           typeof axiosError.response.data === "object" &&
-           axiosError.response.data !== null &&
-           "message" in axiosError.response.data
-             ? (axiosError.response.data as { message?: string }).message
-             : undefined;
-         alert(errorMessage || "OTP send failed", "error");
-      }
+      alert(err?.response?.data?.detail || "OTP send failed", "error");
     } finally {
       setLoading(false);
     }
