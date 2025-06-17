@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Exo 2", sans-serif;
+  color: $blackColor !important;
+}
+h1, h2, h3, h4, h5{
+  font-family: "Exo 2", sans-serif;
+}
+div, p, h1, h2, h3, h4, h5{
+  padding: 0;
+  margin: 0;
+}
+a{
+  @include transition;
+}
+img, .img {
+  @include img;
+}
+input,
+textarea,
+select {
+  outline: none;
+}
+ul {
+  @include ul;
+}
+p{
+  font-family: "Exo 2", sans-serif;
+  font-size: 15px;
+  color: $blackColor;
+  font-weight: 400;
+  line-height: 26px;
+  margin-bottom: 20px;
+}
+.container {
+  width: 100%;
+  max-width: 95%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}

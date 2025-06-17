@@ -1,0 +1,59 @@
+@import "../../assets/styles/shared.scss";
+
+.header{
+    position: relative;
+    background-color: $headerBg;
+    padding: 15px 0;
+    .headerRow{
+        @include justify-space-between;
+        align-items: center;
+    }
+    .headerLogoPrt{
+        img{
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+    .headerMenuPrt{
+        position: relative;
+        margin-left: auto;
+        ul{
+            @include flex;
+            li{
+                margin-left: 40px;
+                font-size: 18px;
+                color: $blackColor;
+                font-weight: 600;
+                &:first-child{
+                    margin-left: 0;
+                }
+                a{
+                    text-decoration: none;
+                    color: $blackColor;
+                    &:hover{
+                        color: $secondaryColor;
+                    }
+                }
+            }
+        }
+    }
+    .hdrSignBtn{
+        margin-left: 40px;
+        a{
+            display: inline-block;
+            background-color: $secondaryColor;
+            font-size: 18px;
+            color: $whiteColor;
+            font-weight: 600;
+            padding: 9px 18px;
+            border-radius: 35px;
+            text-decoration: none;
+            &:hover{
+                background-color: $copyrightBg;
+            }
+            img{
+                margin-right: 7px;
+            }
+        }
+    }
+}
