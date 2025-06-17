@@ -19,6 +19,7 @@ import {
   SendOtpResponse,
 } from "../../../interfaces/authInterface";
 import { jwtDecode } from "jwt-decode";
+import { AxiosError } from "axios";
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -40,7 +41,17 @@ const Login: React.FC = () => {
         );
       }
     } catch (err: any) {
-      alert(err?.message || "OTP send failed", "error");
+      const axiosError = err as AxiosError;
+      console.log(err);
+      if(axiosError.response) {
+         const errorMessage =
+           typeof axiosError.response.data === "object" &&
+           axiosError.response.data !== null &&
+           "message" in axiosError.response.data
+             ? (axiosError.response.data as { message?: string }).message
+             : undefined;
+         alert(errorMessage || "OTP send failed", "error");
+      }
     } finally {
       setLoading(false);
     }

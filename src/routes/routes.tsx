@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import Home from "../pages/home/home";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
+import AddProduct from "../pages/product/addProduct";
 
 function AppRouter() {
   const isAuthenticated = useSelector(
@@ -64,15 +65,7 @@ function AppRouter() {
         {/* ProtectedRoute for routes that require authentication */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
-          <Route
-            path="/dashboard"
-            element={
-              <div style={{ textAlign: "center", marginTop: "50px" }}>
-                <h2>Dashboard (Protected)</h2>
-                <p>Welcome to your private dashboard!</p>
-              </div>
-            }
-          />
+          <Route path="/add-product" element={<AddProduct/>} />
         </Route>
 
         {/* Catch-all for 404 Not Found */}
