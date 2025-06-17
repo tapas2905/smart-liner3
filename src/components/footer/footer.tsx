@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Formik, Form, Field } from "formik";
 import styles from './footer.module.scss';
 
-const Footer = () => {
+const Footer: React.FC  = () => {
 
   return (
     <>
@@ -15,17 +14,17 @@ const Footer = () => {
             <h2>Customer Service</h2>
             <ul className={styles.footerMenu}>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Frequently Asked Questions
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Contact Us
                 </Link>
               </li>
@@ -35,17 +34,17 @@ const Footer = () => {
             <h2>Information</h2>
             <ul className={styles.footerMenu}>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Information
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   Policies & Terms of Service
                 </Link>
               </li>
@@ -55,22 +54,22 @@ const Footer = () => {
             <h2>Follow Us</h2>
             <ul className={styles.footerSocialMedia}>
               <li>
-                <Link>
+                <Link to={'#'}>
                   <img src='images/facebook-icon.svg' alt='facebook icon' />
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   <img src='images/instagram-icon.svg' alt='instagram icon' />
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   <img src='images/youtube-icon.svg' alt='youtube icon' />
                 </Link>
               </li>
               <li>
-                <Link>
+                <Link to={'#'}>
                   <img src='images/tiktok-icon.svg' alt='tiktok icon' />
                 </Link>
               </li>
@@ -80,21 +79,19 @@ const Footer = () => {
             <h2>Sign up for our newsletter</h2>
             <div className={styles.footerNewsLetter}>
               <p>Your Weekly/Monthly Dose of Knowledge and Inspiration</p>
-              <Formik>
-                <Form>
-                  <Field
+                <form>
+                  <input
                     name="email"
                     type="email"
                     placeholder="Enter Your Email Address"
                   />
                   <button
-                    type="submit"
+                    type="button"
                     className={styles.submitBtn}
                   >
                     Submit
                   </button>
-                </Form>
-              </Formik>
+                </form>
             </div>
           </div>
         </div>        

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './header.module.scss';
 
-const Header = () => {
+const Header: React.FC  = () => {
 
   return (
     <div className={styles.header}>
@@ -14,18 +14,18 @@ const Header = () => {
           <div className={styles.headerMenuPrt}>
             <ul>
               <li>
-                <Link>Home</Link>
+                <Link to={'#'}>Home</Link>
               </li>
               <li>
-                <Link>Product List</Link>
+                <Link to={'#'}>Product List</Link>
               </li>
               <li>
-                <Link>Shop Online</Link>
+                <Link to={'#'}>Shop Online</Link>
               </li>
             </ul>
           </div>
           <div className={styles.hdrSignBtn}>
-            <Link>
+            <Link to={'#'}>
               <img src='images/sign-user-icon.svg' alt='sign user icon' />
               <span>Sign In</span>
             </Link>
