@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/auth/login/login";
 import ProtectedRoute from "./protectedRoute";
 import AuthRedirect from "./authRedirect";
-import Home from "../pages/home/home";
+// import Home from "../pages/home/home";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
 import ProductList from "../pages/product-list/productList";
 
@@ -18,7 +18,7 @@ function AppRouter() {
 
         {/* ProtectedRoute for routes that require authentication */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ProductList />} />
           <Route path="/product-list" element={<ProductList />} />
         </Route>
 
