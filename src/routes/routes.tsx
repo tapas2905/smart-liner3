@@ -15,7 +15,6 @@ function AppRouter() {
         <Route element={<AuthRedirect />}>
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/add-product" element={<AddProduct/>} />
         </Route>
 
         {/* ProtectedRoute for routes that require authentication */}
