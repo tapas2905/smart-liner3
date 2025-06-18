@@ -5,25 +5,57 @@ import Footer from '../../components/footer/footer';
 import styles from './productList.module.scss';
 import api from '../../services/api';
 import { ProductListViewType } from '../../types/productType';
+import noProductImage from '../../assets/images/No-Product-Image-Available.png';
+import Pagination from '@mui/material/Pagination';
+import { ProductListInterface } from '../../interfaces/productInterface';
 
 const ProductList: React.FC = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductListInterface[]>([]);
   const [viewListType, setViewListType] = useState<ProductListViewType>('gridView');
+  const [page, setPage] = useState<number>(1);
+  const [size, setSize] = useState<number>(28);
+  const [totalPage, setTotalPage] = useState<number>(0);
+  const [keyword, setKeyword] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>(''); 
+  const [loading, setLoading] = useState<boolean>(false); 
+  const delay = 300;
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [page, size, keyword]);
   const getProducts = async () => {
+    setLoading(true);
     try {
-      const res = await api.get(`product/list?page=1`);
+      const res = await api.get(`product/list?page=${page}&size=${size}${keyword ? `&keyword=${keyword}` : ''}`);
       if (res.status === 200) {
         console.log(res.data);
-        setProducts(res.data.data);
+        setProducts(res.data.items);
+        setTotalPage(res.data?.totalPages || 0);
       }
-    } catch (error) {}
+    } catch (error) {
+
+    } finally {
+      setLoading(false);
+    }
   };
   const selectListViewType = (type: ProductListViewType) => {
     setViewListType(type);
   }
+   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setKeyword(inputValue);
+    }, delay);
+    // Clean up the previous timer if inputValue changes before the delay
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue, delay]);
+  const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+
   return (
     <>
       <Header/>
@@ -44,6 +76,8 @@ const ProductList: React.FC = () => {
                       <input
                         type="search"
                         placeholder="Search by SKU or product title"
+                        value={inputValue}
+                        onChange={handleKeywordChange}
                       />
                       <img
                         src='images/search-icon.svg'
@@ -82,205 +116,28 @@ const ProductList: React.FC = () => {
           <div className={styles.productGridViewPrt}>
           <div className={styles.container}>
             <ul>
-              <li>
-                <img src='images/product-image1.png' alt='product img' />
+              {products.map((product: ProductListInterface) => (
+               <li key={product.sku_id}>
+                <img src={product.main_wb || noProductImage} alt='product img' /> 
                 <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
+                  <h3>{product?.year_start && product?.year_end ? `${product?.year_start} - ${product?.year_end}` : ''} {product.make || ''} {product.model || ''}</h3>
                   <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
+                    <h4>{product.sku}</h4>
                     <p>
                       <span className={styles.productGridOldPrice}>$52.99</span>
                       <span className={styles.productGridCurrentPrice}>$49.99</span>
                     </p>
                   </div>
                 </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
+                <div className={product.inventory_quantity > 0 ? styles.productGridStockBtn : styles.productGridSoldBtn}>
+                  {product.inventory_quantity > 0 ? (<p><span>{product.inventory_quantity}</span> Stock</p>) : (<p>Sold Out</p>)}
                 </div>
               </li>
-              <li>
-                <img src='images/product-image2.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image3.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image4.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image5.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image6.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image7.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image8.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image1.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image2.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image3.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridStockBtn}>
-                  <p><span>15</span> Stock</p>
-                </div>
-              </li>
-              <li>
-                <img src='images/product-image4.png' alt='product img' />
-                <div className={styles.productGridTextArea}>
-                  <h3>2021-2023 fit floor CR-mats</h3>
-                  <div className={styles.productGridPriceRow}>
-                    <h4>SA0401/SB401</h4>
-                    <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.productGridSoldBtn}>
-                  <p>Sold Out</p>
-                </div>
-              </li>
+              ))}
             </ul>
           </div>
         </div>
         )}
-
-
-
 
         {/* Product List View Area */}
         {viewListType === 'listView' && (
@@ -296,20 +153,21 @@ const ProductList: React.FC = () => {
                 <li>Your Cost</li>
               </ul>
             </div>
-
-            <div className={styles.tableRow}>
+            {products.map((product: any, ind: number) => (
+               <div className={styles.tableRow}>
               <ul>
                 <li data-label="Image">
-                  <img src='images/product-image1.png' alt='product img' />
+                  <img src={product.main_wb || noProductImage} alt='product img' />
                 </li>
+
                 <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
+                  <p>{product.sku}</p>
                 </li>
                 <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
+                  <p><strong>{product?.year_start && product?.year_end ? `${product?.year_start} - ${product?.year_end}` : ''}</strong> {product.make || ''} {product.model || ''}</p>
                 </li>
                 <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
+                  {product.inventory_quantity > 0 ? (<p><strong>{product.inventory_quantity} </strong>Items Available</p>) : (<p>Sold Out</p>)}
                 </li>
                 <li data-label="MSRP">
                   <p>$52.00</p>
@@ -319,172 +177,12 @@ const ProductList: React.FC = () => {
                 </li>
               </ul>
             </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image2.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image3.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image4.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image5.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image6.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image7.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.tableRow}>
-              <ul>
-                <li data-label="Image">
-                  <img src='images/product-image8.png' alt='product img' />
-                </li>
-                <li data-label="SKU">
-                  <p>SA0401/SB401/DO415</p>
-                </li>
-                <li data-label="Product Title">
-                  <p><strong>2021-2023 </strong>fit floor CR-mats</p>
-                </li>
-                <li data-label="Stock">
-                  <p><strong>15 </strong>Items Available</p>
-                </li>
-                <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li>
-                <li data-label="Your Cost">
-                  <p>$50.00</p>
-                </li>
-              </ul>
-            </div>
-
+            ))}
           </div>
         </div>
         )}
-        
+        {products.length === 0 && !loading && <p>No product available.</p>}
+        {products.length > 0 && <Pagination variant="outlined" shape="rounded" count={totalPage} page={page} onChange={handlePageChange} />}
       </div>
 
       <Footer/>
