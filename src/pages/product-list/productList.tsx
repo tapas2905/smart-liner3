@@ -1,12 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Link } from "react-router-dom";
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import styles from './productList.module.scss';
+import api from '../../services/api';
+import { ProductListViewType } from '../../types/productType';
 
 const ProductList: React.FC = () => {
-  
-
+  const [products, setProducts] = useState([]);
+  const [viewListType, setViewListType] = useState<ProductListViewType>('gridView');
+  useEffect(() => {
+    getProducts();
+  }, []);
+  const getProducts = async () => {
+    try {
+      const res = await api.get(`product/list?page=1`);
+      if (res.status === 200) {
+        console.log(res.data);
+        setProducts(res.data.data);
+      }
+    } catch (error) {}
+  };
+  const selectListViewType = (type: ProductListViewType) => {
+    setViewListType(type);
+  }
   return (
     <>
       <Header/>
@@ -25,8 +42,7 @@ const ProductList: React.FC = () => {
                   <li className={styles.productSearchField}>
                     <form>
                       <input
-                        name="email"
-                        type="email"
+                        type="search"
                         placeholder="Search by SKU or product title"
                       />
                       <img
@@ -36,15 +52,11 @@ const ProductList: React.FC = () => {
                        />
                     </form>
                   </li>
-                  <li className={styles.productGridListView}>
-                    <Link to={'#'}>
+                  <li className={styles.productGridListView} onClick={() => selectListViewType('gridView')}>
                       <img src='images/grid-view-icon.svg' alt='grid view icon' />
-                    </Link>
                   </li>
-                  <li className={styles.productGridListView}>
-                    <Link to={'#'}>
+                  <li className={styles.productGridListView} onClick={() => selectListViewType('listView')}>
                       <img src='images/list-view-icon.svg' alt='list view icon' />
-                    </Link>
                   </li>
                   <li className={styles.productSort}>
                     <select name="cars" id="cars">
@@ -66,7 +78,8 @@ const ProductList: React.FC = () => {
         </div>
 
         {/* Product List Grid View Area */}
-        <div className={styles.productGridViewPrt}>
+        { viewListType === 'gridView' && (
+          <div className={styles.productGridViewPrt}>
           <div className={styles.container}>
             <ul>
               <li>
@@ -264,12 +277,14 @@ const ProductList: React.FC = () => {
             </ul>
           </div>
         </div>
+        )}
 
 
 
 
         {/* Product List View Area */}
-        <div className={styles.productListViewPrt}>
+        {viewListType === 'listView' && (
+          <div className={styles.productListViewPrt}>
           <div className={styles.container}>
             <div className={styles.tableHead}>
               <ul>
@@ -468,6 +483,7 @@ const ProductList: React.FC = () => {
 
           </div>
         </div>
+        )}
         
       </div>
 

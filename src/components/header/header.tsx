@@ -2,12 +2,15 @@ import React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './header.module.scss';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { setLogout } from "../../store/userSlice";
+import alert from "../../services/alert";
 
 const Header: React.FC  = () => {
-
-    // Profile dropdown toggle
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
+   const dispatch: AppDispatch = useDispatch();
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -29,6 +32,10 @@ const Header: React.FC  = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+   const handleLogout = () => {
+    dispatch(setLogout());
+    alert("You have been logged out successfully.", "success");
+  };
 
   return (
     <div className={styles.header}>
@@ -69,7 +76,7 @@ const Header: React.FC  = () => {
                       <i className="fa-regular fa-circle-user"></i>
                       <span>Profile</span>
                     </Link></li>
-                  <li>
+                  <li onClick={handleLogout}>
                     <Link to="#">
                      <i className="fa-solid fa-arrow-right-from-bracket"></i>
                      <span>Logout</span>

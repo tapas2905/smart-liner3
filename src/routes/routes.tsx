@@ -14,12 +14,12 @@ function AppRouter() {
         <Route element={<AuthRedirect />}>
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/product-list" element={<ProductList />} />
         </Route>
 
         {/* ProtectedRoute for routes that require authentication */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
+          <Route path="/product-list" element={<ProductList />} />
         </Route>
 
         {/* Catch-all for 404 Not Found */}

@@ -77,16 +77,16 @@
                         }
                     }
                     .productGridListView{
-                        a{
+
                             display: inline-block;
                             background-color: $whiteColor;
                             padding: 8px;
                             border: 1px solid $borderColor;
                             border-radius: 10px;
+                            cursor: pointer;
                             &:hover{
                                 background-color: $headerBg;
                             }
-                        }
                     }
                     .productDownloadCsv{
                         font-size: 15px;
