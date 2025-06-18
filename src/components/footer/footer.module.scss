@@ -48,7 +48,7 @@
                 display: inline-block;
                 width: 40px;
                 height: 40px;
-                background-color: $socialMediaBgColor;
+                background-color: $copyrightBgColor;
                 border-radius: 100%;
                 text-align: center;
                 line-height: 36px;
@@ -87,7 +87,7 @@
             cursor: pointer;
             @include transition;
             &:hover{
-                background-color: $copyrightBg;
+                background-color: $copyrightBgColor;
             }
         }
     }
@@ -97,7 +97,7 @@
 
 .copyrightPrt{
     position: relative;
-    background-color: $copyrightBg;
+    background-color: $copyrightBgColor;
     padding: 25px 0;
     text-align: center;
     p{

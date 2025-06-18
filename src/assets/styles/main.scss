@@ -11,7 +11,7 @@ div, p, h1, h2, h3, h4, h5{
   padding: 0;
   margin: 0;
 }
-a{
+a, button{
   @include transition;
 }
 img, .img {
@@ -40,4 +40,40 @@ p{
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+}
+
+
+.smartLinerFormClmThree{
+  ul{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    li{
+      position: relative;
+      label{
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: $blackColor;
+        font-weight: 500;
+      }
+      input{
+        width: 100%;
+        height: 60px;
+        background-color: $headerBg;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 15px;
+        font-family: "Exo 2", sans-serif;
+        font-size: 16px;
+        color: $textColor;
+      }
+      p.errorMessage{
+        font-size: 14px;
+        color: $errorColor;
+        margin: 0;
+      }
+    }
+  }
 }

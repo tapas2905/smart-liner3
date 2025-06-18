@@ -1,8 +1,10 @@
 import React from 'react';
 import { Formik, Form, FieldArray, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import "./style.css";
 import alert from '../../services/alert';
+import Header from '../../components/header/header';
+import Footer from '../../components/footer/footer';
+import styles from './addProduct.module.scss';
 
 // Define the shape of a single item in a purchase order
 interface Item {
@@ -86,44 +88,47 @@ const App: React.FC = () => {
 
   return (
     <>
-     
-      <div className="app-container">
-        <div className="form-wrapper">
-          <div className="header-section">
-            <h1 className="main-title">Please Enter Your Order For Submission</h1>
-          </div>
 
-          <Formik
-            initialValues={initialFormValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ values, setFieldValue, errors, touched }) => (
-              <Form className="main-form">
-                <FieldArray name="purchaseOrders">
-                  {({ push, remove }) => (
-                    <>
-                      {values.purchaseOrders.map((po, poIndex) => (
-                        <div key={poIndex} className="purchase-order-block">
-                          <div className="po-header">
-                            <h2 className="po-title">Purchase Order #{poIndex + 1}</h2>
-                            {values.purchaseOrders.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => remove(poIndex)}
-                                className="remove-po-button"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
-                            )}
-                          </div>
+    <Header/>
 
-                          {/* Purchase Order Details */}
-                          <div className="grid-container">
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.purchaseOrder`} className="label">
+    <div className={styles.addProductBdyPrt}>
+      <div className={styles.container}>
+        <div className={styles.pageTitle}>
+          <h1>Please Enter Your Order For Submission</h1>
+        </div>
+        
+        <Formik
+          initialValues={initialFormValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, setFieldValue, errors, touched }) => (
+          <Form className="main-form">
+
+            <FieldArray name="purchaseOrders">
+              {({ push, remove }) => (
+                <>
+                  {values.purchaseOrders.map((po, poIndex) => (
+                    <div className={styles.addProductFormBox}>
+                      <div key={poIndex} className="purchase-order-block">
+                        <div className="po-header">
+                          {/* <h2 className="po-title">Purchase Order #{poIndex + 1}</h2> */}
+                          {values.purchaseOrders.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => remove(poIndex)}
+                              className={styles.removePoButton}
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Purchase Order Details */}
+                        <div className={styles.smartLinerFormClmThree}>
+                          <ul>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.purchaseOrder`}>
                                 Purchase Order
                               </label>
                               <Field
@@ -131,37 +136,26 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.purchaseOrder`}
                                 type="text"
                                 placeholder="Enter Your ID"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseOrder`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.purchaseDate`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseOrder`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.purchaseDate`}>
                                 Purchase Date (Optional)
                               </label>
-                              <div className="input-with-icon">
-                                <Field
-                                  id={`purchaseOrders.${poIndex}.purchaseDate`}
-                                  name={`purchaseOrders.${poIndex}.purchaseDate`}
-                                  type="date"
-                                  className="input-field"
-                                />
-                                <div className="icon-wrapper">
-                                  <svg className="icon" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseDate`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientFirstName`} className="label">
+                              <Field
+                                id={`purchaseOrders.${poIndex}.purchaseDate`}
+                                name={`purchaseOrders.${poIndex}.purchaseDate`}
+                                type="date"
+                                className={styles.noCalenderIcon}
+                              />
+                              {/* <div className={styles.calenderIcon}>
+                                <img src='images/calender-icon.svg' alt='calender icon' />
+                              </div> */}
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseDate`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientFirstName`}>
                                 Recipient First Name
                               </label>
                               <Field
@@ -169,16 +163,11 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientFirstName`}
                                 type="text"
                                 placeholder="Enter First Name"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientFirstName`} component="div" className="error-message" />
-                            </div>
-                          </div>
-
-                          {/* Recipient Address Details */}
-                          <div className="grid-container">
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientLastName`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientFirstName`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientLastName`}>
                                 Recipient Last Name
                               </label>
                               <Field
@@ -186,13 +175,11 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientLastName`}
                                 type="text"
                                 placeholder="Enter Last Name"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientLastName`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientAddress1`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientLastName`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientAddress1`}>
                                 Recipient Address 1
                               </label>
                               <Field
@@ -200,13 +187,11 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientAddress1`}
                                 type="text"
                                 placeholder="Enter Address 1"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientAddress1`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientAddress2`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientAddress1`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientAddress2`}>
                                 Recipient Address 2 (Optional)
                               </label>
                               <Field
@@ -214,15 +199,11 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientAddress2`}
                                 type="text"
                                 placeholder="Enter Address 2"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientAddress2`} component="div" className="error-message" />
-                            </div>
-                          </div>
-
-                          <div className="grid-container four-cols">
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientCountryCode`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientAddress2`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientCountryCode`}>
                                 Recipient Country Code
                               </label>
                               <Field
@@ -230,41 +211,37 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientCountryCode`}
                                 type="text"
                                 placeholder="Enter Country Code"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientCountryCode`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientState`} className="label">
-                                Recipient State
-                              </label>
-                              <Field
-                                id={`purchaseOrders.${poIndex}.recipientState`}
-                                name={`purchaseOrders.${poIndex}.recipientState`}
-                                type="text"
-                                placeholder="Enter State"
-                                className="input-field"
-                              />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientState`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientZip`} className="label">
-                                Recipient Zip
-                              </label>
-                              <Field
-                                id={`purchaseOrders.${poIndex}.recipientZip`}
-                                name={`purchaseOrders.${poIndex}.recipientZip`}
-                                type="text"
-                                placeholder="Enter Zip Code"
-                                className="input-field"
-                              />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientZip`} component="div" className="error-message" />
-                            </div>
-
-                            <div className="form-field">
-                              <label htmlFor={`purchaseOrders.${poIndex}.recipientPhoneNumber`} className="label">
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientCountryCode`} component="p" className={styles.errorMessage} />
+                            </li>
+                            <li className={styles.stateZipRow}>
+                              <div className={styles.stateField}>
+                                <label htmlFor={`purchaseOrders.${poIndex}.recipientState`}>
+                                  Recipient State
+                                </label>
+                                <Field
+                                  id={`purchaseOrders.${poIndex}.recipientState`}
+                                  name={`purchaseOrders.${poIndex}.recipientState`}
+                                  type="text"
+                                  placeholder="Enter State"
+                                />
+                                <ErrorMessage name={`purchaseOrders.${poIndex}.recipientState`} component="p" className={styles.errorMessage} />
+                              </div>
+                              <div className={styles.zipField}>
+                                <label htmlFor={`purchaseOrders.${poIndex}.recipientZip`}>
+                                  Recipient Zip
+                                </label>
+                                <Field
+                                  id={`purchaseOrders.${poIndex}.recipientZip`}
+                                  name={`purchaseOrders.${poIndex}.recipientZip`}
+                                  type="text"
+                                  placeholder="Enter Zip Code"
+                                />
+                                <ErrorMessage name={`purchaseOrders.${poIndex}.recipientZip`} component="p" className={styles.errorMessage} />
+                              </div>
+                            </li>
+                            <li>
+                              <label htmlFor={`purchaseOrders.${poIndex}.recipientPhoneNumber`}>
                                 Recipient Phone Number (Optional)
                               </label>
                               <Field
@@ -272,153 +249,136 @@ const App: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientPhoneNumber`}
                                 type="text"
                                 placeholder="Enter Phone Number"
-                                className="input-field"
                               />
-                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientPhoneNumber`} component="div" className="error-message" />
-                            </div>
-                          </div>
+                              <ErrorMessage name={`purchaseOrders.${poIndex}.recipientPhoneNumber`} component="p" className={styles.errorMessage} />
+                            </li>
+                          </ul>
+                        </div>
 
-                          {/* Items Section for this Purchase Order */}
-                          <h3 className="section-title">Items for PO #{poIndex + 1}</h3>
-                          <div className="table-container">
-                            <table className="items-table">
-                              <thead>
-                                <tr>
-                                  <th scope="col" className="table-header">
-                                    Item
-                                  </th>
-                                  <th scope="col" className="table-header">
-                                    Quantity
-                                  </th>
-                                  <th scope="col" className="table-header">
-                                    Action
-                                  </th>
-                                </tr>
-                              </thead>
-                              <FieldArray name={`purchaseOrders.${poIndex}.items`}>
-                                {({ push: pushItem, remove: removeItem }) => (
-                                  <tbody>
-                                    {values.purchaseOrders[poIndex].items.map((item, itemIndex) => (
-                                      <tr key={itemIndex}>
-                                        <td className="table-data">
-                                          <Field
-                                            name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemCode`}
-                                            type="text"
-                                            placeholder="Enter Item Code"
-                                            className="input-field"
-                                          />
-                                          <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemCode`} component="div" className="error-message" />
-                                        </td>
-                                        <td className="table-data quantity-controls">
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              setFieldValue(
-                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                                Math.max(1, item.quantity - 1)
-                                              )
-                                            }
-                                            className="quantity-button"
-                                          >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-                                            </svg>
-                                          </button>
-                                          <Field
-                                            name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
-                                            type="number"
-                                            min="1"
-                                            className="quantity-input"
-                                          />
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              setFieldValue(
-                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                                item.quantity + 1
-                                              )
-                                            }
-                                            className="quantity-button"
-                                          >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                            </svg>
-                                          </button>
-                                          <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`} component="div" className="error-message" />
-                                        </td>
-                                        <td className="table-data">
-                                          <button
-                                            type="button"
-                                            onClick={() => removeItem(itemIndex)}
-                                            className="remove-item-button"
-                                            disabled={values.purchaseOrders[poIndex].items.length === 1} // Disable remove if only one item
-                                          >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                          </button>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                )}
-                              </FieldArray>
-                            </table>
+                        {/* Items Section for this Purchase Order */}
+                        <div className={styles.productItmPrt}>
+                          {/* <h3 className="section-title">Items for PO #{poIndex + 1}</h3> */}
+                          <div className={styles.productItmTable}>
+                            <div className={styles.proTableHead}>
+                              <ul>
+                                <li>Item</li>
+                                <li>Quantity</li>
+                                <li>Action</li>
+                              </ul>
+                            </div>
+                            <FieldArray name={`purchaseOrders.${poIndex}.items`}>
+                              {({ push: pushItem, remove: removeItem }) => (
+                                <div className={styles.proTableBody}>
+                                  {values.purchaseOrders[poIndex].items.map((item, itemIndex) => (
+                                    <ul key={itemIndex}>
+                                      <li className={styles.selectItemDropdown}>
+                                        <select name="cars" id="cars">
+                                          <option value="volvo">SA0401/SB401</option>
+                                          <option value="saab">Saab</option>
+                                          <option value="mercedes">Mercedes</option>
+                                          <option value="audi">Audi</option>
+                                        </select>
+                                      </li>
+                                      <li className={styles.quantityField}>
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            setFieldValue(
+                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                              Math.max(1, item.quantity - 1)
+                                            )
+                                          }
+                                        >
+                                          <i className="fa-solid fa-minus"></i>
+                                        </button>
+                                        <Field
+                                          name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
+                                          type="number"
+                                          min="1"
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            setFieldValue(
+                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                              item.quantity + 1
+                                            )
+                                          }
+                                        >
+                                          <i className="fa-solid fa-plus"></i>
+                                        </button>
+                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`} component="p" className="error-message" />
+                                      </li>
+                                      <li className={styles.itemDeleteBtn}>
+                                        <button
+                                          type="button"
+                                          onClick={() => removeItem(itemIndex)}
+                                          disabled={values.purchaseOrders[poIndex].items.length === 1} // Disable remove if only one item
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                        </button>
+                                      </li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              )}
+                            </FieldArray>
                           </div>
-                          <div className="add-item-container">
+                          <div className={styles.addItem}>
                             <button
                               type="button"
                               onClick={() => setFieldValue(`purchaseOrders.${poIndex}.items`, [...values.purchaseOrders[poIndex].items, { itemCode: '', quantity: 1 }])}
-                              className="add-item-button"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                              </svg>
+                              <i className="fa-solid fa-circle-plus"></i>
                               <span>Add Additional Item</span>
                             </button>
                           </div>
-                          {/* Ensure errors.purchaseOrders[poIndex].items is a string before rendering */}
-                          {/* {touched.purchaseOrders?.[poIndex]?.items && typeof errors.purchaseOrders?.[poIndex]?.items === 'string' && (
-                            <div className="error-message">{(errors.purchaseOrders[poIndex]?.items as string)}</div>
-                          )} */}
                         </div>
-                      ))}
 
-                      {/* Add additional PO button */}
-                      <div className="add-po-container">
+
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Additional Po and  Submit Item Button */}
+                  <div className={styles.addSubmitBtn}>
+                    <ul>
+                      <li>
                         <button
                           type="button"
                           onClick={() => push(initialNewPurchaseOrder)}
-                          className="add-po-button"
+                          className={styles.addPoBtn}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                          </svg>
                           <span>Add additional PO</span>
                         </button>
-                      </div>
                       {/* Ensure errors.purchaseOrders is a string before rendering */}
                       {touched.purchaseOrders && typeof errors.purchaseOrders === 'string' && (
                         <div className="error-message">{errors.purchaseOrders}</div>
                       )}
-                    </>
-                  )}
-                </FieldArray>
+                      </li>
+                      <li>
+                        <button
+                          type="submit"
+                          className={styles.submitBtn}
+                        >
+                          Submit Purchase Items
+                        </button>
+                      </li>
+                    </ul>
+                  </div>                    
+                </>
+              )}
+            </FieldArray>
+            
+          </Form>
+          )}
+        </Formik>        
 
-                {/* Submit Button */}
-                <div className="submit-container">
-                  <button
-                    type="submit"
-                    className="submit-button"
-                  >
-                    Submit Purchase Items
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
       </div>
+    </div>
+
+    <Footer/>
+
     </>
   );
 };
