@@ -7,4 +7,5 @@ export interface ProductListInterface {
   model: string;
   inventory_quantity: number;
   main_wb: string | null;
+  cost_avg: number | null;
 }

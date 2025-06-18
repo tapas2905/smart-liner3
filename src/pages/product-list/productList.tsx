@@ -25,9 +25,8 @@ const ProductList: React.FC = () => {
   const getProducts = async () => {
     setLoading(true);
     try {
-      const res = await api.get(`product/list?page=${page}&size=${size}${keyword ? `&keyword=${keyword}` : ''}`);
+      const res = await api.get(`product/list?page=${page}&page_size=${size}${keyword ? `&keyword=${keyword}` : ''}`);
       if (res.status === 200) {
-        console.log(res.data);
         setProducts(res.data.items);
         setTotalPage(res.data?.totalPages || 0);
       }
@@ -46,6 +45,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setKeyword(inputValue);
+      setPage(1);
     }, delay);
     // Clean up the previous timer if inputValue changes before the delay
     return () => {
@@ -75,7 +75,7 @@ const ProductList: React.FC = () => {
                     <form>
                       <input
                         type="search"
-                        placeholder="Search by SKU or product title"
+                        placeholder="Search by SKU"
                         value={inputValue}
                         onChange={handleKeywordChange}
                       />
@@ -92,14 +92,14 @@ const ProductList: React.FC = () => {
                   <li className={styles.productGridListView} onClick={() => selectListViewType('listView')}>
                       <img src='images/list-view-icon.svg' alt='list view icon' />
                   </li>
-                  <li className={styles.productSort}>
+                  {/* <li className={styles.productSort}>
                     <select name="cars" id="cars">
                       <option value="volvo">Sort by (Defaut)</option>
                       <option value="saab">Saab</option>
                       <option value="mercedes">Mercedes</option>
                       <option value="audi">Audi</option>
                     </select>
-                  </li>
+                  </li> */}
                   <li className={styles.productDownloadCsv}>
                     <Link to={'#'}>
                       Download all products and CSV
@@ -124,8 +124,8 @@ const ProductList: React.FC = () => {
                   <div className={styles.productGridPriceRow}>
                     <h4>{product.sku}</h4>
                     <p>
-                      <span className={styles.productGridOldPrice}>$52.99</span>
-                      <span className={styles.productGridCurrentPrice}>$49.99</span>
+                      {/* <span className={styles.productGridOldPrice}>$52.99</span> */}
+                      <span className={styles.productGridCurrentPrice}>{product.cost_avg ? `$${product.cost_avg}` : ""}</span>
                     </p>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ const ProductList: React.FC = () => {
                 <li>SKU</li>
                 <li>Product Title</li>
                 <li>Stock</li>
-                <li>MSRP</li>
+                {/* <li>MSRP</li> */}
                 <li>Your Cost</li>
               </ul>
             </div>
@@ -169,11 +169,11 @@ const ProductList: React.FC = () => {
                 <li data-label="Stock">
                   {product.inventory_quantity > 0 ? (<p><strong>{product.inventory_quantity} </strong>Items Available</p>) : (<p>Sold Out</p>)}
                 </li>
-                <li data-label="MSRP">
+                {/* <li data-label="MSRP">
                   <p>$52.00</p>
-                </li>
+                </li> */}
                 <li data-label="Your Cost">
-                  <p>$50.00</p>
+                  <p>{product.cost_avg ? `$${product.cost_avg}` : ""}</p>
                 </li>
               </ul>
             </div>
