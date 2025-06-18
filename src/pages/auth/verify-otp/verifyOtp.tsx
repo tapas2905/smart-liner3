@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import alert from "../../../services/alert";
@@ -11,6 +11,9 @@ import {
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../../store/userSlice";
 import { AppDispatch } from "../../../store";
+import Header from "../../../components/header/header";
+import Footer from "../../../components/footer/footer";
+import styles from './verifyotp.module.scss';
 
 const VerifyOtp: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -83,32 +86,58 @@ const VerifyOtp: React.FC = () => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={verifyOtpSchema}
-      onSubmit={(value) => handleVerify(value)}
-    >
-      <Form>
-        <div style={{ maxWidth: "400px", margin: "auto" }}>
-          <h2>Enter Code</h2>
-          {email && <p>Sent to {email}</p>}
-          <div>
-            <label>Your verification code</label>
-            <Field
-              type="text"
-              placeholder="Enter 6-digit code"
-              name="otp"
-              maxLength={6}
-              onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                handleOtpChange(e);
-              }}
-            />
-            <ErrorMessage name="otp" />
-          </div>
-          <button type="submit">Submit</button>
+    <>
+      <Header/>
+      <div className={styles.verifyOtpBodyPrt}>
+        <div className={styles.container}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={verifyOtpSchema}
+            onSubmit={(value) => handleVerify(value)}
+          >
+            <Form>
+              <div className={styles.verifyOtpFormBox}>
+                <div className={styles.verifyOtpBoxHdn}>
+                  <h2>Enter code</h2>
+                  <p>Sent to manoranjan.design@gmail.com</p>
+                </div>
+                {email && <p>Sent to {email}</p>}
+                <div className={styles.verifyOtpFormField}>
+                  <label>Your verification code</label>
+                  <Field
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    name="otp"
+                    maxLength={6}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleOtpChange(e);
+                    }}
+                  />
+                  <ErrorMessage name="otp" component="p" className={styles.verifyOtpError} />
+                  <button 
+                    type="submit"
+                    className={styles.submitBtn}
+                  >
+                    Submit
+                  </button>
+                </div>
+                <p className={styles.verifyOtpTermsService}>
+                  <Link to="#">
+                    Policies & Terms of Service
+                  </Link>
+                  <span>|</span>
+                  <Link to="#">
+                     Sign in with a different email
+                  </Link>
+                </p>
+              </div>
+            </Form>
+          </Formik>
         </div>
-      </Form>
-    </Formik>
+      </div>
+
+      <Footer/>
+    </>
   );
 };
 

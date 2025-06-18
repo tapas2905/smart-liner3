@@ -5,6 +5,7 @@ import ProtectedRoute from "./protectedRoute";
 import AuthRedirect from "./authRedirect";
 import Home from "../pages/home/home";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
+import ProductList from "../pages/product-list/productList";
 
 function AppRouter() {
   return (
@@ -18,6 +19,7 @@ function AppRouter() {
         {/* ProtectedRoute for routes that require authentication */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />} />
+          <Route path="/product-list" element={<ProductList />} />
         </Route>
 
         {/* Catch-all for 404 Not Found */}
