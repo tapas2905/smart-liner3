@@ -8,6 +8,7 @@ import { ProductListViewType } from '../../types/productType';
 import noProductImage from '../../assets/images/No-Product-Image-Available.png';
 import Pagination from '@mui/material/Pagination';
 import { ProductListInterface } from '../../interfaces/productInterface';
+import alert from '../../services/alert';
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductListInterface[]>([]);
@@ -30,8 +31,8 @@ const ProductList: React.FC = () => {
         setProducts(res.data.items);
         setTotalPage(res.data?.totalPages || 0);
       }
-    } catch (error) {
-
+    } catch (error: any) {
+      alert(error?.response?.data?.detail, 'error');
     } finally {
       setLoading(false);
     }

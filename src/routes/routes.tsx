@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "../pages/auth/login/login";
 import ProtectedRoute from "./protectedRoute";
 import AuthRedirect from "./authRedirect";
-// import Home from "../pages/home/home";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
 import ProductList from "../pages/product-list/productList";
+import MyProfile from "../pages/my-profile/myProfile";
 
 function AppRouter() {
   return (
@@ -19,7 +19,7 @@ function AppRouter() {
         {/* ProtectedRoute for routes that require authentication */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<ProductList />} />
-          <Route path="/product-list" element={<ProductList />} />
+          <Route path="/my-profile" element={<MyProfile />} />
         </Route>
 
         {/* Catch-all for 404 Not Found */}

@@ -43,7 +43,7 @@ const Login: React.FC = () => {
         );
       }
     } catch (err: any) {
-      alert(err?.message || "OTP send failed", "error");
+      alert(err?.response?.data?.detail || "OTP send failed", "error");
     } finally {
       setLoading(false);
     }
@@ -80,7 +80,7 @@ const Login: React.FC = () => {
         }
       }
     } catch (err: any) {
-      alert(err?.message || "Google login failed", "error");
+      alert(err?.response?.data?.detail || "Google login failed", "error");
     } finally {
       setLoading(false);
     }
