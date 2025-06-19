@@ -4,6 +4,9 @@
     position: relative;
     background-color: $loginBodyBg;
     padding: 120px 0;
+    @media only screen and (max-width:991px){
+        padding: 40px 0;
+    }
     .verifyOtpFormBox{
         position: relative;
         width: 100%;
@@ -13,6 +16,9 @@
         background-color: $whiteColor;
         border-radius: 10px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+        @media only screen and (max-width:991px){
+            padding: 20px 15px;
+        }
         .verifyOtpBoxHdn{
             text-align: center;
             margin-bottom: 30px;
@@ -20,6 +26,9 @@
                 font-size: 40px;
                 font-weight: 600;
                 margin-bottom: 10px;
+                @media only screen and (max-width:991px){
+                    font-size: 30px;
+                }
             }
             p{
                 font-size: 17px;

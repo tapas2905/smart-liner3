@@ -40,6 +40,59 @@ const Header: React.FC  = () => {
     alert("You have been logged out successfully.", "success");
   };
 
+
+
+
+  // State to manage navbar toggler and dropdowns
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Toggle the main menu open/close
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Handle dropdown menu toggle
+  const handleDropdownToggle = (
+    e: React.MouseEvent<HTMLSpanElement>,
+    dropdownId: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveDropdown((prev) => (prev === dropdownId ? null : dropdownId));
+  };
+
+   // Handle Whole menu open/close
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLElement>) => {
+    const link = (e.target as HTMLElement).closest('a');
+
+    if (!link) return;
+
+    if ((e.target as HTMLElement).closest('.dropdown-toggle')) {
+      return;
+    }
+
+    setIsMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
+
+   // Add Remove Class on Body
+  useEffect(() => {
+    const body = document.body;
+  
+    if (isMenuOpen) {
+      body.classList.add('body-fixed');
+    } else {
+      body.classList.remove('body-fixed');
+    }
+  
+    // Optional cleanup on unmount
+    return () => {
+      body.classList.remove('body-fixed');
+    };
+  }, [isMenuOpen]);
+
   return (
     <div className={styles.header}>
       <div className={styles.container}>
@@ -48,17 +101,36 @@ const Header: React.FC  = () => {
             <Link to="/"><img src='images/logo.svg' alt='Logo' /></Link>
           </div>
           <div className={styles.headerMenuPrt}>
-            <ul>
-              <li>
-                <Link to={'#'}>Home</Link>
-              </li>
-              <li>
-                <Link to={'/'}>Product List</Link>
-              </li>
-              <li>
-                <Link to={'#'}>Shop Online</Link>
-              </li>
-            </ul>
+
+            <nav className={`header-nav navbar navbar-expand-lg ${isMenuOpen ? 'show-menu' : ''}`}>
+              <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} id="navbarsExampleDefault">
+                <ul className="navbar-nav" onClick={handleNavLinkClick}>
+                  <li>
+                    <Link to={'#'}>Home</Link>
+                  </li>
+                  <li>
+                    <Link to={'/'}>Product List</Link>
+                  </li>
+                  <li className="dropdown">
+                    <Link to={'#'} onClick={handleNavLinkClick}>Shop Online</Link>
+                    <span
+                      className="dropdown-toggle"
+                      onClick={(e) => handleDropdownToggle(e, 'dropdown01')}
+                      aria-haspopup="true"
+                      aria-expanded={activeDropdown === 'dropdown01' ? 'true' : 'false'}
+                    ></span>
+                    <ul className={`dropdown-menu slideInUp ${activeDropdown === 'dropdown01' ? 'show' : ''}`} aria-labelledby="dropdown01">
+                      <li>
+                        <Link to="!#">Service Itam 1</Link>
+                      </li>
+                      <li>
+                        <Link to="!#">Service Itam 2</Link>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </nav>
           </div>
           { isAuthenticated ? (
             <div
@@ -68,8 +140,13 @@ const Header: React.FC  = () => {
           >
             <div className={styles.hdrSignBtn}>
               <Link to={'#'}>
-                <i className="fa-regular fa-circle-user"></i>
-                <span>{userInfo?.name}</span>
+                <img
+                  src='images/profile-img.png'
+                  alt='Profile'
+                  className={styles.hdrProfileImg}
+                />
+                <span className={styles.hdrProfileName}>{userInfo?.name}</span>
+                <i className="fa-solid fa-chevron-down hdr-profile-down-arrow"></i>
               </Link>
             </div>
             {isProfileOpen && (
@@ -102,6 +179,18 @@ const Header: React.FC  = () => {
             </div>
           </div>
           )}
+          <button
+            className={`navbar-toggler ${isMenuOpen ? 'open' : ''}`}
+            type="button"
+            onClick={toggleMenu}
+            aria-controls="navbarsExampleDefault"
+            aria-expanded={isMenuOpen ? 'true' : 'false'}
+            aria-label="Toggle navigation"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
     </div>
