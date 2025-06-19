@@ -61,7 +61,6 @@ const Login: React.FC = () => {
         const decodedToken: DecodeGoogleTokenResponse = jwtDecode(idToken);
         const payload = {
           email: decodedToken.email,
-          name: decodedToken.name,
         };
         const res = await api.post("auth/google-login", payload);
         if (res.data) {

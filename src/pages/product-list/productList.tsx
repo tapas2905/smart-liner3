@@ -183,6 +183,7 @@ const ProductList: React.FC = () => {
         </div>
         )}
         {products.length === 0 && !loading && <p>No product available.</p>}
+        {loading && <p className={styles.loader}>Please wait...</p>}
         {products.length > 0 && <Pagination variant="outlined" shape="rounded" count={totalPage} page={page} onChange={handlePageChange} />}
       </div>
 
