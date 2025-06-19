@@ -36,7 +36,7 @@
             .editProfileBtn{
                 text-align: center;
                 margin-top: 40px;
-                a{
+                button{
                     display: inline-block;
                     font-size: 17px;
                     color: $blackColor;
@@ -45,6 +45,7 @@
                     border: 1px solid $borderColor;
                     padding: 10px 15px;
                     border-radius: 10px;
+                    cursor: pointer;
                     i{
                         width: 33px;
                         height: 33px;

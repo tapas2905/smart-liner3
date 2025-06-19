@@ -1,12 +1,51 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import styles from './myProfile.module.scss';
+import { Formik, Form, Field, ErrorMessage, FormikProps  } from 'formik';
+import { ProfileInterface } from '../../interfaces/profileInterface';
+import * as Yup from 'yup';
 
 const MyProfile: React.FC = () => {
-  
-
+  const [editableForm, setEditableForm] = useState<boolean>(false);
+  const formikRef = useRef<FormikProps<ProfileInterface>>(null);
+  const initialProfile: ProfileInterface = {
+    name: "John Doe",
+    userCode: "SL5899",
+    shippingMethod: "By Road",
+    discountPercentage: 20,
+    email: "user@gmail.com",
+    invoiceEmail: "invoice@gmail.com",
+  };
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    userCode: Yup.string().required("User Code is required"),
+    shippingMethod: Yup.string().required("Shipping Method is required"),
+    discountPercentage: Yup.number()
+      .required("Discount Percentage is required")
+      .min(0, "Discount Percentage must be at least 0")
+      .max(100, "Discount Percentage cannot exceed 100"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    invoiceEmail: Yup.string()
+      .email("Invalid email format")
+      .required("Invoice Email is required"),
+  });
+  const handleSubmit = (Value: ProfileInterface) => {
+    console.log(Value);
+    setEditableForm(false);
+  };
+  const editProfile = () => {
+    if(!editableForm) {
+      setEditableForm(true);
+    } else {
+      if (formikRef.current) {
+        formikRef.current.submitForm();
+      }
+    }
+  };
   return (
     <>
       <Header/>
@@ -29,69 +68,76 @@ const MyProfile: React.FC = () => {
                 </div>
               </div>
               <div className={styles.editProfileBtn}>
-                <Link to={'#'}>
-                  <i className="fa-solid fa-pencil"></i> <span>Edit Profile</span>
-                </Link>
+               <button onClick={editProfile}>
+                  <i className={`fa-solid ${editableForm ? "fa-save" : "fa-pencil"}`}></i> <span>{editableForm ? "Save" : "Edit Profile"}</span>
+                </button>
               </div>
             </div>
             <div className={styles.myProfileRightPrt}>
               <h1>My Profile</h1>
               <div className={styles.smartLinerFormClmTwo}>
-                <form>
+                <Formik
+                initialValues={initialProfile}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+                innerRef={formikRef}
+                >
+                  <Form>
                   <ul>
                     <li>
                       <label>Name</label>
-                      <input
+                      <Field
                         name='name'
-                        value='Andrena Turing'
-                        readOnly
+                        readOnly={!editableForm}
                       />
+                      {editableForm && <ErrorMessage name="name" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>User Code</label>
-                      <input
-                        name='name'
-                        value='SAD789899'
-                        readOnly
+                      <Field
+                        name='userCode'
+                        readOnly={!editableForm}
                       />
+                      {editableForm && <ErrorMessage name="userCode" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>Shipping Method</label>
-                      <input
-                        name='name'
-                        value='Please Select One'
-                        readOnly
+                      <Field
+                        name='shippingMethod'
+                        readOnly={!editableForm}
                       />
+                     {editableForm && <ErrorMessage name="shippingMethod" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>Discount Percentage</label>
-                      <input
-                        name='name'
-                        value='20'
-                        readOnly
+                      <Field
+                        name='discountPercentage'
+                        readOnly={!editableForm}
                       />
                       <div className={styles.percentageIcon}>
                         <span>%</span>
                       </div>
+                     {editableForm && <ErrorMessage name="discountPercentage" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>Account Email</label>
-                      <input
-                        name='name'
-                        value='andrena.turing@krameramerica.com'
-                        readOnly
+                      <Field
+                        name='email'
+                        readOnly={!editableForm}
                       />
+                     {editableForm && <ErrorMessage name="email" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>Invoice Email</label>
-                      <input
-                        name='name'
-                        value='andrena.turing@krameramerica.com'
-                        readOnly
+                      <Field
+                        name='invoiceEmail'
+                        readOnly={!editableForm}
                       />
+                     {editableForm && <ErrorMessage name="invoiceEmail" component="p" className={styles.errorMessage} />}
                     </li>
                   </ul>
-                </form>
+                  </Form>
+                </Formik>
               </div>
               <p>If you would like to change anything in your account, to reach out to 
                 <Link to={'#'}>orders@krameramerica.com</Link>

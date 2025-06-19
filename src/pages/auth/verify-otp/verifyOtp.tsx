@@ -20,6 +20,7 @@ const VerifyOtp: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const VerifyOtp: React.FC = () => {
       email,
       verifyPageToken: token,
     };
+    setLoading(true);
     try {
       const res = await api.post("auth/verify-otp", payload);
       if (res.data) {
@@ -69,7 +71,9 @@ const VerifyOtp: React.FC = () => {
         );
       }
     } catch (error: any) {
-      alert(error?.message, "error");
+      alert(error?.response?.data?.detail, "error");
+    } finally {
+      setLoading(false);
     }
   };
   const verifyOtpSchema = Yup.object().shape({
@@ -99,9 +103,8 @@ const VerifyOtp: React.FC = () => {
               <div className={styles.verifyOtpFormBox}>
                 <div className={styles.verifyOtpBoxHdn}>
                   <h2>Enter code</h2>
-                  <p>Sent to manoranjan.design@gmail.com</p>
+                  <p>Sent to {email}</p>
                 </div>
-                {email && <p>Sent to {email}</p>}
                 <div className={styles.verifyOtpFormField}>
                   <label>Your verification code</label>
                   <Field
@@ -117,8 +120,9 @@ const VerifyOtp: React.FC = () => {
                   <button 
                     type="submit"
                     className={styles.submitBtn}
+                    disabled={loading}
                   >
-                    Submit
+                    {loading ? "Verifying..." : "Verify OTP"}
                   </button>
                 </div>
                 <p className={styles.verifyOtpTermsService}>
