@@ -271,7 +271,7 @@ const App: React.FC = () => {
                                 <div className={styles.proTableBody}>
                                   {values.purchaseOrders[poIndex].items.map((item, itemIndex) => (
                                     <ul key={itemIndex}>
-                                      <li className={styles.selectItemDropdown}>
+                                      <li data-label="Item" className={styles.selectItemDropdown}>
                                         <select name="cars" id="cars">
                                           <option value="volvo">SA0401/SB401</option>
                                           <option value="saab">Saab</option>
@@ -279,37 +279,39 @@ const App: React.FC = () => {
                                           <option value="audi">Audi</option>
                                         </select>
                                       </li>
-                                      <li className={styles.quantityField}>
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            setFieldValue(
-                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                              Math.max(1, item.quantity - 1)
-                                            )
-                                          }
-                                        >
-                                          <i className="fa-solid fa-minus"></i>
-                                        </button>
-                                        <Field
-                                          name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
-                                          type="number"
-                                          min="1"
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            setFieldValue(
-                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                              item.quantity + 1
-                                            )
-                                          }
-                                        >
-                                          <i className="fa-solid fa-plus"></i>
-                                        </button>
+                                      <li data-label="Quantity" className={styles.quantityField}>
+                                        <div className={styles.quantityBtnInput}>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setFieldValue(
+                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                                Math.max(1, item.quantity - 1)
+                                              )
+                                            }
+                                          >
+                                            <i className="fa-solid fa-minus"></i>
+                                          </button>
+                                          <Field
+                                            name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
+                                            type="number"
+                                            min="1"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setFieldValue(
+                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                                item.quantity + 1
+                                              )
+                                            }
+                                          >
+                                            <i className="fa-solid fa-plus"></i>
+                                          </button>
+                                        </div>
                                         <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`} component="p" className="error-message" />
                                       </li>
-                                      <li className={styles.itemDeleteBtn}>
+                                      <li data-label="Action" className={styles.itemDeleteBtn}>
                                         <button
                                           type="button"
                                           onClick={() => removeItem(itemIndex)}
