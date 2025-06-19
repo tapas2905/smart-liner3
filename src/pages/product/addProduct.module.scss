@@ -62,20 +62,23 @@
     }
   }
 
-  // .noCalenderIcon::-webkit-calendar-picker-indicator {
-  //   opacity: 0;
-  //   position: absolute;
-  //   width: 100%;
-  //   height: 100%;
-  //   left: 0;
-  //   top: 0;
-  //   cursor: pointer;
-  // }
-  // .noCalenderIcon{
-  //   appearance: none;
-  //   -webkit-appearance: none;
-  //   -moz-appearance: none;
-  // }
+  .noCalenderIcon::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+  }
+  .noCalenderIcon{
+    background-image: url(../../assets/images/calender-icon.svg);
+    background-repeat: no-repeat;
+    background-position: 94% 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
   // .calenderIcon{
   //   position: absolute;
   //   top: 46px;
@@ -115,6 +118,23 @@
         }
       }
       .proTableBody{
+        ul{
+          li{
+            @media (max-width: 991px){
+              width: 100%;
+              @include justify-space-between;
+              align-items: center;
+            }
+            &::before{
+              @media (max-width: 991px){
+                content: attr(data-label);
+                font-size: 18px;
+                font-weight: 600;
+                margin-right: 20px;
+              }
+            }
+          }
+        }
         .selectItemDropdown{
           select{
             width: 180px;

@@ -280,33 +280,35 @@ const App: React.FC = () => {
                                         </select>
                                       </li>
                                       <li data-label="Quantity" className={styles.quantityField}>
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            setFieldValue(
-                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                              Math.max(1, item.quantity - 1)
-                                            )
-                                          }
-                                        >
-                                          <i className="fa-solid fa-minus"></i>
-                                        </button>
-                                        <Field
-                                          name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
-                                          type="number"
-                                          min="1"
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            setFieldValue(
-                                              `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
-                                              item.quantity + 1
-                                            )
-                                          }
-                                        >
-                                          <i className="fa-solid fa-plus"></i>
-                                        </button>
+                                        <div className={styles.quantityBtnInput}>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setFieldValue(
+                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                                Math.max(1, item.quantity - 1)
+                                              )
+                                            }
+                                          >
+                                            <i className="fa-solid fa-minus"></i>
+                                          </button>
+                                          <Field
+                                            name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`}
+                                            type="number"
+                                            min="1"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setFieldValue(
+                                                `purchaseOrders.${poIndex}.items.${itemIndex}.quantity`,
+                                                item.quantity + 1
+                                              )
+                                            }
+                                          >
+                                            <i className="fa-solid fa-plus"></i>
+                                          </button>
+                                        </div>
                                         <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.quantity`} component="p" className="error-message" />
                                       </li>
                                       <li data-label="Action" className={styles.itemDeleteBtn}>

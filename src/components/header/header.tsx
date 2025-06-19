@@ -121,10 +121,10 @@ const Header: React.FC  = () => {
                     ></span>
                     <ul className={`dropdown-menu slideInUp ${activeDropdown === 'dropdown01' ? 'show' : ''}`} aria-labelledby="dropdown01">
                       <li>
-                        <Link to="!#">Service Itam 1</Link>
+                        <Link to="!#">Fill manual form</Link>
                       </li>
                       <li>
-                        <Link to="!#">Service Itam 2</Link>
+                        <Link to="!#">Automatically fill form from attachment or text</Link>
                       </li>
                     </ul>
                   </li>
