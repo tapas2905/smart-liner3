@@ -12,37 +12,37 @@
         img{
             width: 100%;
             max-width: 300px;
+            @media only screen and (max-width:991px){
+                max-width: 200px;
+            }
+            @media only screen and (max-width:576px){
+                max-width: 130px;
+            }
+            @media only screen and (max-width:380px){
+                max-width: 100px;
+            }
         }
     }
     .headerMenuPrt{
         position: relative;
         margin-left: auto;
-        ul{
-            @include flex;
-            li{
-                margin-left: 40px;
-                font-size: 18px;
-                color: $blackColor;
-                font-weight: 600;
-                &:first-child{
-                    margin-left: 0;
-                }
-                a{
-                    text-decoration: none;
-                    color: $blackColor;
-                    &:hover{
-                        color: $secondaryColor;
-                    }
-                }
-            }
+        @media only screen and (max-width:991px){
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
     }
     .hdrSignInPrt{
         position: relative;
         margin-left: 40px;
+        @media only screen and (max-width:991px){
+            margin-left: auto;
+        }
         .hdrSignBtn{
             a{
-                display: inline-block;
+                display: flex;
+                align-items: center;
                 background-color: $secondaryColor;
                 font-size: 18px;
                 color: $whiteColor;
@@ -50,8 +50,32 @@
                 padding: 9px 18px;
                 border-radius: 35px;
                 text-decoration: none;
+                vertical-align: middle;
+                @media only screen and (max-width:576px){
+                    font-size: 14px;
+                    padding: 5px 8px;
+                }
                 &:hover{
                     background-color: $copyrightBgColor;
+                }
+                .hdrProfileName{
+                    display: inline-block;
+                    @media only screen and (max-width:576px){
+                        width: 65px;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                    @media only screen and (max-width:450px){
+                        width: 45px;
+                    }
+                }
+                .hdrProfileImg{
+                    width: 30px;
+                    height: 30px;
+                    border: 2px solid $whiteColor;
+                    border-radius: 100%;
+                    margin-right: 10px;
                 }
                 i{
                     margin-right: 8px;

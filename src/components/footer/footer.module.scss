@@ -8,16 +8,38 @@
         @include justify-space-between;
         .footerClm{
             width: 20%;
+            @media only screen and (max-width:991px){
+                width: 100%;
+                margin-top: 35px;
+            }
+            &:first-child{
+                @media only screen and (max-width:991px){
+                    margin-top: 0;
+                }
+            }
             h2{
                 font-size: 25px;
                 color: $blackColor;
                 font-weight: 600;
+                @media only screen and (max-width:991px){
+                    text-align: center;
+                    margin-bottom: 10px;
+                }
+                @media only screen and (max-width:576px){
+                    font-size: 20px;
+                }
             }
             &.footerSocialMediaClm{
                 width: 20%;
+                @media only screen and (max-width:991px){
+                    width: 100%;
+                }
             }
             &.footerNewsLetterClm{
                 width: 33%;
+                @media only screen and (max-width:991px){
+                    width: 100%;
+                }
             }
         }
     }
@@ -27,6 +49,10 @@
             color: $blackColor;
             font-weight: 500;
             margin-top: 20px;
+            @media only screen and (max-width:991px){
+                text-align: center;
+                margin-top: 10px;
+            }
             a{
                 text-decoration: none;
                 color: $blackColor;
@@ -39,6 +65,9 @@
     .footerSocialMedia{
         @include flex;
         margin-top: 20px;
+        @media only screen and (max-width:991px){
+            @include justify-center;
+        }
         li{
             margin-left: 10px;
             &:first-child{
@@ -62,6 +91,14 @@
     .footerNewsLetter{
         position: relative;
         margin-top: 20px;
+        @media only screen and (max-width:991px){
+            margin-top: 0;
+        }
+        p{
+            @media only screen and (max-width:991px){
+                text-align: center;
+            }
+        }
         input{
             width: 100%;
             height: 55px;
@@ -71,6 +108,9 @@
             padding: 10px 145px 10px 25px;
             font-size: 15px;
             font-weight: 600;
+            @media only screen and (max-width:450px){
+                padding: 10px 20px;
+            }
         }
         .submitBtn{
             position: absolute;
@@ -84,8 +124,17 @@
             font-size: 19px;
             color: $whiteColor;
             font-weight: 600;
+            text-align: center;
+            line-height: 1;
             cursor: pointer;
             @include transition;
+            @media only screen and (max-width:450px){
+                position: relative;
+                top: 0;
+                right: 0;
+                display: block;
+                margin: 10px auto 0 auto;
+            }
             &:hover{
                 background-color: $copyrightBgColor;
             }
