@@ -15,6 +15,9 @@
       @media (max-width: 991px){
         font-size: 30px;
       }
+      @media (max-width: 576px){
+        font-size: 27px;
+      }
 		}
 	}
 	.addProductFormBox{
@@ -27,22 +30,42 @@
     @media (max-width: 991px){
       padding: 20px 15px;
     }
-    .removePoButton{
-      position: absolute;
-      top: -15px;
-      right: -15px;
-      border: none;
-      background-color: transparent;
-      cursor: pointer;
-      i{
-        width: 35px;
-        height: 35px;
-        background-color: $errorColor;
-        border-radius: 100%;
-        font-size: 16px;
-        color: $whiteColor;
-        text-align: center;
-        line-height: 35px;
+    .purchaseOrderTitleRow{
+      @include justify-space-between;
+      align-items: center;
+      margin-bottom: 35px;
+      .purchaseOrderTitle{
+        position: relative;
+        font-size: 30px;
+        font-weight: 600;
+        padding-bottom: 10px;
+        &::after{
+          position: absolute;
+          content: '';
+          width: 150px;
+          height: 2px;
+          bottom: 0;
+          left: 0;
+          background-color: $copyrightBgColor;
+        }
+        @media (max-width: 991px){
+          font-size: 22px;
+        }
+      }
+      .removePoButton{
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        i{
+          width: 35px;
+          height: 35px;
+          border: 1px solid $errorColor;
+          border-radius: 100%;
+          font-size: 16px;
+          color: $errorColor;
+          text-align: center;
+          line-height: 35px;
+        }
       }
     }
 	}

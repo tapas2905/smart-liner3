@@ -106,6 +106,9 @@
                 @media (max-width: 991px){
                     font-size: 30px;
                 }
+                @media (max-width: 576px){
+                    font-size: 27px;
+                }
             }
             p{
                 color: $textColor;
