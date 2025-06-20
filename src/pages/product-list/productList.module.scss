@@ -119,7 +119,7 @@
                             margin-bottom: 15px;
                             text-align: center;
                         }
-                        a{
+                        button{
                             display: inline-block;
                             background-color: $copyrightBgColor;
                             text-decoration: none;
@@ -132,6 +132,13 @@
                             &:hover{
                                 background-color: $secondaryColor;
                             }
+                        }
+                        button:disabled,
+                        button[disabled] {
+                            border: 1px solid #999999;
+                            background-color: #cccccc;
+                            color: #666666;
+                            cursor: default;
                         }
                     }
                 }

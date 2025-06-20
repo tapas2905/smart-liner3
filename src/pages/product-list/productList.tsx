@@ -1,24 +1,26 @@
-import React, {useState, useEffect} from 'react';
-import { Link } from "react-router-dom";
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
-import styles from './productList.module.scss';
-import api from '../../services/api';
-import { ProductListViewType } from '../../types/productType';
-import noProductImage from '../../assets/images/No-Product-Image-Available.png';
-import Pagination from '@mui/material/Pagination';
-import { ProductListInterface } from '../../interfaces/productInterface';
-import alert from '../../services/alert';
+import React, { useState, useEffect } from "react";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
+import styles from "./productList.module.scss";
+import api from "../../services/api";
+import { ProductListViewType } from "../../types/productType";
+import noProductImage from "../../assets/images/No-Product-Image-Available.png";
+import Pagination from "@mui/material/Pagination";
+import { ProductListInterface } from "../../interfaces/productInterface";
+import alert from "../../services/alert";
+import endpoints from "../../helpers/endpoints";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductListInterface[]>([]);
-  const [viewListType, setViewListType] = useState<ProductListViewType>('gridView');
+  const [viewListType, setViewListType] =
+    useState<ProductListViewType>("gridView");
   const [page, setPage] = useState<number>(1);
-  const [size, setSize] = useState<number>(28);
+  const [size] = useState<number>(28);
   const [totalPage, setTotalPage] = useState<number>(0);
-  const [keyword, setKeyword] = useState<string>('');
-  const [inputValue, setInputValue] = useState<string>(''); 
-  const [loading, setLoading] = useState<boolean>(false); 
+  const [keyword, setKeyword] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [downloadingCsv, setDownloadingCsv] = useState<boolean>(false);
   const delay = 300;
   useEffect(() => {
     getProducts();
@@ -26,21 +28,28 @@ const ProductList: React.FC = () => {
   const getProducts = async () => {
     setLoading(true);
     try {
-      const res = await api.get(`product/list?page=${page}&page_size=${size}${keyword ? `&keyword=${keyword}` : ''}`);
+      const res = await api.get(
+        `${endpoints.product.getProducts}?page=${page}&page_size=${size}${
+          keyword ? `&keyword=${keyword}` : ""
+        }`
+      );
       if (res.status === 200) {
         setProducts(res.data.items);
         setTotalPage(res.data?.totalPages || 0);
       }
     } catch (error: any) {
-      alert(error?.response?.data?.detail, 'error');
+      alert(error?.response?.data?.detail, "error");
     } finally {
       setLoading(false);
     }
   };
   const selectListViewType = (type: ProductListViewType) => {
     setViewListType(type);
-  }
-   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  };
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setPage(value);
   };
   useEffect(() => {
@@ -56,6 +65,34 @@ const ProductList: React.FC = () => {
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+  const downloadCsv = async () => {
+    setDownloadingCsv(true);
+    try {
+      const res = await api.get(
+        `${endpoints.product.getProducts}?export_csv=true`
+      );
+      if (res.status === 200) {
+        const BOM = "\uFEFF";
+        const csvContent = BOM + res.data;
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "product_data.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail, "error");
+    } finally {
+      setDownloadingCsv(false);
+    }
+  };
+  
 
   return (
     <>
@@ -102,9 +139,9 @@ const ProductList: React.FC = () => {
                     </select>
                   </li> */}
                   <li className={styles.productDownloadCsv}>
-                    <Link to={'#'}>
+                    <button onClick={downloadCsv} disabled={downloadingCsv}>
                       Download all products and CSV
-                    </Link>
+                    </button>
                   </li>
                 </ul>
               </div>

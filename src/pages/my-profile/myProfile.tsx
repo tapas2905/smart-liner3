@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
@@ -6,36 +6,52 @@ import styles from './myProfile.module.scss';
 import { Formik, Form, Field, ErrorMessage, FormikProps  } from 'formik';
 import { ProfileInterface } from '../../interfaces/profileInterface';
 import * as Yup from 'yup';
+import api from '../../services/api';
+import alert from '../../services/alert';
+import endpoints from '../../helpers/endpoints';
 
 const MyProfile: React.FC = () => {
   const [editableForm, setEditableForm] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const formikRef = useRef<FormikProps<ProfileInterface>>(null);
+  useEffect(()=> {
+    getProfileInfo();
+  }, []);
   const initialProfile: ProfileInterface = {
-    name: "John Doe",
-    userCode: "SL5899",
-    shippingMethod: "By Road",
-    discountPercentage: 20,
-    email: "user@gmail.com",
-    invoiceEmail: "invoice@gmail.com",
+    name: "",
+    userCode: "",
+    shippingMethod: "",
+    discountPercentage: "",
+    accountEmail: "",
+    invoiceEmail: "",
   };
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    userCode: Yup.string().required("User Code is required"),
-    shippingMethod: Yup.string().required("Shipping Method is required"),
-    discountPercentage: Yup.number()
-      .required("Discount Percentage is required")
-      .min(0, "Discount Percentage must be at least 0")
-      .max(100, "Discount Percentage cannot exceed 100"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
+    name: Yup.string(),
+    userCode: Yup.string(),
+    shippingMethod: Yup.string(),
+    discountPercentage: Yup.string(),
+    accountEmail: Yup.string(),
     invoiceEmail: Yup.string()
       .email("Invalid email format")
       .required("Invoice Email is required"),
   });
-  const handleSubmit = (Value: ProfileInterface) => {
-    console.log(Value);
-    setEditableForm(false);
+  const handleSubmit = async (Value: ProfileInterface) => {
+    setLoading(true);
+    try {
+      const payload = {
+        invoice_email: Value.invoiceEmail
+      }
+      const res = await api.post(endpoints.profile.updateProfile, payload);
+      if (res.data) {
+        alert(res.data?.message, "success");
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+    } finally {
+      setEditableForm(false);
+      setLoading(false);
+      getProfileInfo();
+    }
   };
   const editProfile = () => {
     if(!editableForm) {
@@ -46,6 +62,24 @@ const MyProfile: React.FC = () => {
       }
     }
   };
+  const getProfileInfo = async () => {
+    try {
+      const res = await api.get(endpoints.profile.getProfileInfo);
+      if(res.status === 200) {
+        const data: ProfileInterface = res.data;
+        formikRef.current?.setValues({
+          name: data.name || "",
+          userCode: data.userCode || "",
+          shippingMethod: data.shippingMethod || "",
+          discountPercentage: data.discountPercentage || "",
+          accountEmail: data.accountEmail || "",
+          invoiceEmail: data.invoiceEmail || "",
+        });
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+    }
+  }
   return (
     <>
       <Header/>
@@ -68,7 +102,7 @@ const MyProfile: React.FC = () => {
                 </div>
               </div>
               <div className={styles.editProfileBtn}>
-               <button onClick={editProfile}>
+               <button onClick={editProfile} disabled={loading}>
                   <i className={`fa-solid ${editableForm ? "fa-save" : "fa-pencil"}`}></i> <span>{editableForm ? "Save" : "Edit Profile"}</span>
                 </button>
               </div>
@@ -88,7 +122,7 @@ const MyProfile: React.FC = () => {
                       <label>Name</label>
                       <Field
                         name='name'
-                        readOnly={!editableForm}
+                        disabled
                       />
                       {editableForm && <ErrorMessage name="name" component="p" className={styles.errorMessage} />}
                     </li>
@@ -96,7 +130,7 @@ const MyProfile: React.FC = () => {
                       <label>User Code</label>
                       <Field
                         name='userCode'
-                        readOnly={!editableForm}
+                       disabled
                       />
                       {editableForm && <ErrorMessage name="userCode" component="p" className={styles.errorMessage} />}
                     </li>
@@ -104,7 +138,7 @@ const MyProfile: React.FC = () => {
                       <label>Shipping Method</label>
                       <Field
                         name='shippingMethod'
-                        readOnly={!editableForm}
+                        disabled
                       />
                      {editableForm && <ErrorMessage name="shippingMethod" component="p" className={styles.errorMessage} />}
                     </li>
@@ -112,7 +146,7 @@ const MyProfile: React.FC = () => {
                       <label>Discount Percentage</label>
                       <Field
                         name='discountPercentage'
-                        readOnly={!editableForm}
+                        disabled
                       />
                       <div className={styles.percentageIcon}>
                         <span>%</span>
@@ -122,16 +156,16 @@ const MyProfile: React.FC = () => {
                     <li>
                       <label>Account Email</label>
                       <Field
-                        name='email'
-                        readOnly={!editableForm}
+                        name='accountEmail'
+                        disabled
                       />
-                     {editableForm && <ErrorMessage name="email" component="p" className={styles.errorMessage} />}
+                     {editableForm && <ErrorMessage name="accountEmail" component="p" className={styles.errorMessage} />}
                     </li>
                     <li>
                       <label>Invoice Email</label>
                       <Field
                         name='invoiceEmail'
-                        readOnly={!editableForm}
+                        disabled={!editableForm}
                       />
                      {editableForm && <ErrorMessage name="invoiceEmail" component="p" className={styles.errorMessage} />}
                     </li>
