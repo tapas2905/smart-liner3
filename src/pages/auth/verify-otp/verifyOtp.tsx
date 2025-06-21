@@ -14,6 +14,7 @@ import { AppDispatch } from "../../../store";
 import Header from "../../../components/header/header";
 import Footer from "../../../components/footer/footer";
 import styles from './verifyotp.module.scss';
+import endpoints from "../../../helpers/endpoints";
 
 const VerifyOtp: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -52,7 +53,7 @@ const VerifyOtp: React.FC = () => {
     };
     setLoading(true);
     try {
-      const res = await api.post("auth/verify-otp", payload);
+      const res = await api.post(endpoints.auth.verifyOtp, payload);
       if (res.data) {
         const data: LoginResponse = res.data;
         alert(
@@ -71,7 +72,7 @@ const VerifyOtp: React.FC = () => {
         );
       }
     } catch (error: any) {
-      alert(error?.response?.data?.detail, "error");
+      alert(error?.response?.data?.detail || error?.message, "error");
     } finally {
       setLoading(false);
     }

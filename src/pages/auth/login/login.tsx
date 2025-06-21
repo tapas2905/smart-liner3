@@ -22,19 +22,20 @@ import { jwtDecode } from "jwt-decode";
 import Header from "../../../components/header/header";
 import Footer from "../../../components/footer/footer";
 import styles from './login.module.scss';
+import endpoints from "../../../helpers/endpoints";
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Replace with your actual Google Client ID
+  // Google Client ID
   const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID ?? "";
 
   const handleSubmit = async (value: { email: string }) => {
     setLoading(true);
     try {
-      const res = await api.post("auth/send-otp", value);
+      const res = await api.post(endpoints.auth.sendOtp, value);
       if (res.data) {
         const data: SendOtpResponse = res.data;
         alert(data.message, "success");
@@ -62,7 +63,7 @@ const Login: React.FC = () => {
         const payload = {
           email: decodedToken.email,
         };
-        const res = await api.post("auth/google-login", payload);
+        const res = await api.post(endpoints.auth.googleLogin, payload);
         if (res.data) {
           const data: LoginResponse = res.data;
           alert(res.data?.message || "You have successfully logged in.", "success");

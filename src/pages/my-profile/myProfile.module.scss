@@ -4,11 +4,20 @@
     position: relative;
     background-color: $loginBodyBg;
     padding: 50px 0;
+    @media (max-width: 991px){
+        padding: 40px 0;
+    }
     .myProfileBdyRow{
         @include justify-space-between;
+        @media (max-width: 991px){
+            @include justify-center;
+        }
         .myProfileLeftPrt{
             width: 300px;
             text-align: center;
+            @media (max-width: 991px){
+                width: 200px;
+            }
             .profileImgPrt{
                 position: relative;
                 .profileImg{
@@ -18,6 +27,10 @@
                     object-fit: cover;
                     box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
                     border: 10px solid $whiteColor;
+                    @media (max-width: 991px){
+                        width: 200px;
+                        height: 200px;
+                    }
                 }
                 .profileCameraIcon{
                     position: absolute;
@@ -31,6 +44,19 @@
                     line-height: 45px;
                     border: 6px solid $whiteColor;
                     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+                    @media (max-width: 991px){
+                        width: 45px;
+                        height: 45px;
+                        line-height: 31px;
+                        border: 4px solid $whiteColor;
+                        bottom: 16px;
+                        right: 9px;
+                    }
+                    img{
+                        @media (max-width: 991px){
+                            max-width: 24px;
+                        }
+                    }
                 }
             }
             .editProfileBtn{
@@ -64,15 +90,32 @@
                         color: $whiteColor;
                     }
                 }
+                button:disabled,
+                button[disabled] {
+                    border: 1px solid #999999;
+                    background-color: #cccccc;
+                    color: #666666;
+                    cursor: default;
+                }
             }
         }
         .myProfileRightPrt{
             width: calc(100% - 360px);
+            @media (max-width: 991px){
+                width: 100%;
+                margin-top: 30px;
+            }
             h1{
                 font-size: 40px;
                 color: $blackColor;
                 font-weight: 600;
                 margin-bottom: 40px;
+                @media (max-width: 991px){
+                    font-size: 30px;
+                }
+                @media (max-width: 576px){
+                    font-size: 27px;
+                }
             }
             p{
                 color: $textColor;
