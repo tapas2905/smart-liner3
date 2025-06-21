@@ -109,17 +109,16 @@ const App: React.FC = () => {
               {({ push, remove }) => (
                 <>
                   {values.purchaseOrders.map((po, poIndex) => (
-                    <div className={styles.addProductFormBox}>
-                      <div key={poIndex} className="purchase-order-block">
-                        <div className="po-header">
-                          {/* <h2 className="po-title">Purchase Order #{poIndex + 1}</h2> */}
+                    <div key={poIndex} className={styles.addProductFormBox}>
+                        <div className={styles.purchaseOrderTitleRow}>
+                          <h2 className={styles.purchaseOrderTitle}>Purchase Order {poIndex + 1}</h2>
                           {values.purchaseOrders.length > 1 && (
                             <button
                               type="button"
                               onClick={() => remove(poIndex)}
                               className={styles.removePoButton}
                             >
-                              <i className="fa-solid fa-trash-can"></i>
+                              <i className="fa-solid fa-xmark"></i>
                             </button>
                           )}
                         </div>
@@ -336,9 +335,7 @@ const App: React.FC = () => {
                             </button>
                           </div>
                         </div>
-
-
-                      </div>
+                        
                     </div>
                   ))}
 

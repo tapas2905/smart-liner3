@@ -371,3 +371,9 @@ body.body-fixed::before {
         display: block !important;
       }
   }
+
+@media only screen and (max-width:365px){
+    .navbar-toggler{
+        margin-left: 10px;
+    }
+}
