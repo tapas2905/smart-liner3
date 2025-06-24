@@ -9,9 +9,11 @@ import * as Yup from 'yup';
 import api from '../../services/api';
 import alert from '../../services/alert';
 import endpoints from '../../helpers/endpoints';
+import noProfileImage from "../../assets/images/no_profile_image.webp";
 
 const MyProfile: React.FC = () => {
   const [editableForm, setEditableForm] = useState<boolean>(false);
+  const [profileInfo, setProfileInfo] = useState<ProfileInterface>();
   const [loading, setLoading] = useState<boolean>(false);
   const formikRef = useRef<FormikProps<ProfileInterface>>(null);
   useEffect(()=> {
@@ -67,6 +69,7 @@ const MyProfile: React.FC = () => {
       const res = await api.get(endpoints.profile.getProfileInfo);
       if(res.status === 200) {
         const data: ProfileInterface = res.data;
+        setProfileInfo(data);
         formikRef.current?.setValues({
           name: data.name || "",
           userCode: data.userCode || "",
@@ -90,7 +93,7 @@ const MyProfile: React.FC = () => {
             <div className={styles.myProfileLeftPrt}>
               <div className={styles.profileImgPrt}>
                 <img
-                  src='images/product-image1.png'
+                  src={profileInfo?.profilePictureUrl || noProfileImage}
                   alt='Profile'
                   className={styles.profileImg}
                 />

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../components/header/header";
-import Footer from "../../components/footer/footer";
+import Header from "../../../components/header/header";
+import Footer from "../../../components/footer/footer";
 import styles from "./productList.module.scss";
-import api from "../../services/api";
-import { ProductListViewType } from "../../types/productType";
-import noProductImage from "../../assets/images/No-Product-Image-Available.png";
+import api from "../../../services/api";
+import { ProductListViewType } from "../../../types/productType";
+import noProductImage from "../../../assets/images/No-Product-Image-Available.png";
 import Pagination from "@mui/material/Pagination";
-import { ProductListInterface } from "../../interfaces/productInterface";
-import alert from "../../services/alert";
-import endpoints from "../../helpers/endpoints";
+import { ProductListInterface } from "../../../interfaces/productInterface";
+import alert from "../../../services/alert";
+import endpoints from "../../../helpers/endpoints";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductListInterface[]>([]);
@@ -155,20 +155,20 @@ const ProductList: React.FC = () => {
           <div className={styles.container}>
             <ul>
               {products.map((product: ProductListInterface) => (
-               <li key={product.sku_id}>
-                <img src={product.main_wb || noProductImage} alt='product img' /> 
+               <li key={product.skuId}>
+                <img src={product.mainWb || noProductImage} alt='product img' /> 
                 <div className={styles.productGridTextArea}>
-                  <h3>{product?.year_start && product?.year_end ? `${product?.year_start} - ${product?.year_end}` : ''} {product.make || ''} {product.model || ''}</h3>
+                  <h3>{product?.yearStart && product?.yearEnd ? `${product?.yearStart} - ${product?.yearEnd}` : ''} {product.make || ''} {product.model || ''}</h3>
                   <div className={styles.productGridPriceRow}>
                     <h4>{product.sku}</h4>
                     <p>
-                      {/* <span className={styles.productGridOldPrice}>$52.99</span> */}
-                      <span className={styles.productGridCurrentPrice}>{product.cost_avg ? `$${product.cost_avg}` : ""}</span>
+                      <span className={styles.productGridOldPrice}>{product.costAvg ? `$${parseFloat((product.costAvg).toString()).toFixed(2)}` : ""}</span>
+                      <span className={styles.productGridCurrentPrice}>{product.discountedPrice ? `$${parseFloat((product.discountedPrice).toString()).toFixed(2)}` : ""}</span>
                     </p>
                   </div>
                 </div>
-                <div className={product.inventory_quantity > 0 ? styles.productGridStockBtn : styles.productGridSoldBtn}>
-                  {product.inventory_quantity > 0 ? (<p><span>{product.inventory_quantity}</span> Stock</p>) : (<p>Sold Out</p>)}
+                <div className={product.inventoryQuantity > 0 ? styles.productGridStockBtn : styles.productGridSoldBtn}>
+                  {product.inventoryQuantity > 0 ? (<p><span>{product.inventoryQuantity}</span> Stock</p>) : (<p>Sold Out</p>)}
                 </div>
               </li>
               ))}
@@ -187,31 +187,31 @@ const ProductList: React.FC = () => {
                 <li>SKU</li>
                 <li>Product Title</li>
                 <li>Stock</li>
-                {/* <li>MSRP</li> */}
+                <li>MSRP</li>
                 <li>Your Cost</li>
               </ul>
             </div>
-            {products.map((product: any, ind: number) => (
-               <div className={styles.tableRow}>
+            {products.map((product: ProductListInterface, ind: number) => (
+               <div className={styles.tableRow} key={ind}>
               <ul>
                 <li data-label="Image">
-                  <img src={product.main_wb || noProductImage} alt='product img' />
+                  <img src={product.mainWb || noProductImage} alt='product img' />
                 </li>
 
                 <li data-label="SKU">
                   <p>{product.sku}</p>
                 </li>
                 <li data-label="Product Title">
-                  <p><strong>{product?.year_start && product?.year_end ? `${product?.year_start} - ${product?.year_end}` : ''}</strong> {product.make || ''} {product.model || ''}</p>
+                  <p><strong>{product?.yearStart && product?.yearEnd ? `${product?.yearStart} - ${product?.yearEnd}` : ''}</strong> {product.make || ''} {product.model || ''}</p>
                 </li>
                 <li data-label="Stock">
-                  {product.inventory_quantity > 0 ? (<p><strong>{product.inventory_quantity} </strong>Items Available</p>) : (<p>Sold Out</p>)}
+                  {product.inventoryQuantity > 0 ? (<p><strong>{product.inventoryQuantity} </strong>Items Available</p>) : (<p>Sold Out</p>)}
                 </li>
-                {/* <li data-label="MSRP">
-                  <p>$52.00</p>
-                </li> */}
+                <li data-label="MSRP">
+                  <p>{product.costAvg ? `$${parseFloat((product.costAvg).toString()).toFixed(2)}` : ""}</p>
+                </li>
                 <li data-label="Your Cost">
-                  <p>{product.cost_avg ? `$${product.cost_avg}` : ""}</p>
+                  <p>{product.discountedPrice ? `$${parseFloat((product.discountedPrice).toString()).toFixed(2)}` : ""}</p>
                 </li>
               </ul>
             </div>
@@ -221,7 +221,7 @@ const ProductList: React.FC = () => {
         )}
 
         <div className={styles.container}>
-          {products.length === 0 && !loading && <p>No product available.</p>}
+          {products.length === 0 && !loading && <p className={styles.loader}>No product available.</p>}
           {loading && <p className={styles.loader}>Please wait...</p>}
           {products.length > 0 && <Pagination className="product-pagination" variant="outlined" shape="rounded" count={totalPage} page={page} onChange={handlePageChange} />}
         </div>

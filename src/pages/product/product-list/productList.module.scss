@@ -1,4 +1,4 @@
-@import "../../assets/styles/shared.scss";
+@import "../../../assets/styles/shared.scss";
 
 .productListBdyPrt{
     position: relative;
@@ -87,7 +87,7 @@
                             padding: 10px 10px;
                             font-size: 15px;
                             color: #161E2D;
-                            background-image: url(../../assets/images/down-arrow-icon.svg);
+                            background-image: url(../../../assets/images/down-arrow-icon.svg);
                             background-repeat: no-repeat;
                             background-position: 94% 16px;
                             cursor: pointer;
@@ -356,11 +356,11 @@
                             border-radius: 10px;
                         }
                     }
-                    // &:nth-child(5){
-                    //     p{
-                    //         text-decoration: line-through;
-                    //     }
-                    // }
+                    &:nth-child(5){
+                        p{
+                            text-decoration: line-through;
+                        }
+                    }
                     &:last-child{
                         p{
                             font-size: 18px;
@@ -375,6 +375,7 @@
 
     .loader{
         text-align: center;
+        margin-top: 10px;
     }
 
 }

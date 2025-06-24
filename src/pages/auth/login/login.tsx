@@ -44,7 +44,7 @@ const Login: React.FC = () => {
         );
       }
     } catch (err: any) {
-      alert(err?.response?.data?.detail || "OTP send failed", "error");
+      alert(err?.response?.data?.detail || err?.message || "OTP send failed", "error");
     } finally {
       setLoading(false);
     }
@@ -74,6 +74,7 @@ const Login: React.FC = () => {
                 id: data.user.id,
                 email: data.user.email,
                 name: data.user.name,
+                profileImage: data.user.profilePictureUrl
               },
             })
           );

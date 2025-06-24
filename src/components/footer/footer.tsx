@@ -100,7 +100,7 @@ const Footer: React.FC  = () => {
 
     <div className={styles.copyrightPrt}>
       <div className={styles.container}>
-        <p>Copyright &copy; 2025, Tour & Travel Pvt. Ltd</p>
+        <p>Copyright &copy; {new Date().getFullYear()}, Tour & Travel Pvt. Ltd</p>
       </div>
     </div>
 

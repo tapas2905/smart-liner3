@@ -67,6 +67,7 @@ const VerifyOtp: React.FC = () => {
               id: data.user.id,
               email: data.user.email,
               name: data.user.name,
+              profileImage: data.user.profilePictureUrl
             },
           })
         );

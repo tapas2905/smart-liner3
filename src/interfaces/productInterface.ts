@@ -1,11 +1,12 @@
 export interface ProductListInterface {
-  sku_id: string | null;
+  skuId: string | null;
   sku: string | null;
-  year_start: string | null;
-  year_end: string | null;
+  yearStart: string | null;
+  yearEnd: string | null;
   make: string | null;
   model: string;
-  inventory_quantity: number;
-  main_wb: string | null;
-  cost_avg: number | null;
+  inventoryQuantity: number;
+  mainWb: string | null;
+  costAvg: number | null;
+  discountedPrice: number | null;
 }
