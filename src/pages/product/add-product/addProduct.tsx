@@ -1,14 +1,16 @@
 import React from 'react';
 import { Formik, Form, FieldArray, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import alert from '../../services/alert';
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
+import alert from '../../../services/alert';
+import Header from '../../../components/header/header';
+import Footer from '../../../components/footer/footer';
 import styles from './addProduct.module.scss';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 // Define the shape of a single item in a purchase order
 interface Item {
-  itemCode: string;
+  itemId: any;
   quantity: number;
 }
 
@@ -32,10 +34,15 @@ interface FormData {
   purchaseOrders: PurchaseOrder[];
 }
 
-const App: React.FC = () => {
+const AddProduct: React.FC = () => {
+  const itemList = [
+    {name: "Tapas", id: "1"},
+    {name: "Sanju", id: "2"},
+    {name: "Rohan", id: "3"},
+  ];
   // Yup validation schema for a single item
   const itemSchema = Yup.object().shape({
-    itemCode: Yup.string().required('Item is required'),
+    itemId: Yup.object().required('Item is required'),
     quantity: Yup.number()
       .required('Quantity is required')
       .min(1, 'Quantity must be at least 1')
@@ -74,7 +81,7 @@ const App: React.FC = () => {
     recipientState: '',
     recipientZip: '',
     recipientPhoneNumber: '',
-    items: [{ itemCode: '', quantity: 1 }],
+    items: [{ itemId: null, quantity: 1 }],
   };
 
   const initialFormValues: FormData = {
@@ -82,7 +89,9 @@ const App: React.FC = () => {
   };
 
   const handleSubmit = (values: FormData) => {
-    console.log('Form Submitted:', values);
+    const payload = values.purchaseOrders.map((po) => ({...po, items: po.items.map((item) => ({itemId: item.itemId?.id, quantity: item.quantity}))}));
+    console.log(payload);
+    
    alert("Form submitted successfully", "success");
   };
 
@@ -104,6 +113,7 @@ const App: React.FC = () => {
         >
           {({ values, setFieldValue, errors, touched }) => (
           <Form className="main-form">
+           <p> {JSON.stringify(values)}</p>
 
             <FieldArray name="purchaseOrders">
               {({ push, remove }) => (
@@ -271,12 +281,22 @@ const App: React.FC = () => {
                                   {values.purchaseOrders[poIndex].items.map((item, itemIndex) => (
                                     <ul key={itemIndex}>
                                       <li data-label="Item" className={styles.selectItemDropdown}>
-                                        <select name="cars" id="cars">
+                                        {/* <Field as="select" name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemId`}>
                                           <option value="volvo">SA0401/SB401</option>
                                           <option value="saab">Saab</option>
                                           <option value="mercedes">Mercedes</option>
                                           <option value="audi">Audi</option>
-                                        </select>
+                                        </Field> */}
+                                        <Autocomplete
+                                         options={itemList}
+                                         value={values.purchaseOrders[poIndex].items[itemIndex].itemId || null}
+                                          getOptionLabel={(option) => option.name}
+                                          onChange={(event: any, newValue: any | null) => {setFieldValue( `purchaseOrders.${poIndex}.items.${itemIndex}.itemId`, newValue)}}
+                                          renderInput={(params) => <TextField {...params}
+                                          label="Select item" 
+                                          />}
+                                          />
+                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemId`} component="p" className="error-message" />
                                       </li>
                                       <li data-label="Quantity" className={styles.quantityField}>
                                         <div className={styles.quantityBtnInput}>
@@ -314,7 +334,7 @@ const App: React.FC = () => {
                                         <button
                                           type="button"
                                           onClick={() => removeItem(itemIndex)}
-                                          disabled={values.purchaseOrders[poIndex].items.length === 1} // Disable remove if only one item
+                                          disabled={values.purchaseOrders[poIndex].items.length === 1}
                                         >
                                           <i className="fa-solid fa-trash-can"></i>
                                         </button>
@@ -328,7 +348,7 @@ const App: React.FC = () => {
                           <div className={styles.addItem}>
                             <button
                               type="button"
-                              onClick={() => setFieldValue(`purchaseOrders.${poIndex}.items`, [...values.purchaseOrders[poIndex].items, { itemCode: '', quantity: 1 }])}
+                              onClick={() => setFieldValue(`purchaseOrders.${poIndex}.items`, [...values.purchaseOrders[poIndex].items, { itemId: null, quantity: 1 }])}
                             >
                               <i className="fa-solid fa-circle-plus"></i>
                               <span>Add Additional Item</span>
@@ -382,4 +402,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default AddProduct;

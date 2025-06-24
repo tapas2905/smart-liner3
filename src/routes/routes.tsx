@@ -4,8 +4,8 @@ import Login from "../pages/auth/login/login";
 import ProtectedRoute from "./protectedRoute";
 import AuthRedirect from "./authRedirect";
 import VerifyOtp from "../pages/auth/verify-otp/verifyOtp";
-import AddProduct from "../pages/product/addProduct";
-import ProductList from "../pages/product-list/productList";
+import AddProduct from "../pages/product/add-product/addProduct";
+import ProductList from "../pages/product/product-list/productList";
 import MyProfile from "../pages/my-profile/myProfile";
 
 function AppRouter() {

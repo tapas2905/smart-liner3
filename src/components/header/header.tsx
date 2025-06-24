@@ -6,9 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setLogout } from "../../store/userSlice";
 import alert from "../../services/alert";
+import noProfileImage from "../../assets/images/no_profile_image.webp";
 
 const Header: React.FC  = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef(null);
   const dispatch: AppDispatch = useDispatch();
   const isAuthenticated = useSelector(
@@ -39,13 +42,6 @@ const Header: React.FC  = () => {
     dispatch(setLogout());
     alert("You have been logged out successfully.", "success");
   };
-
-
-
-
-  // State to manage navbar toggler and dropdowns
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Toggle the main menu open/close
   const toggleMenu = () => {
@@ -106,9 +102,6 @@ const Header: React.FC  = () => {
               <div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} id="navbarsExampleDefault">
                 <ul className="navbar-nav" onClick={handleNavLinkClick}>
                   <li>
-                    <Link to={'#'}>Home</Link>
-                  </li>
-                  <li>
                     <Link to={'/'}>Product List</Link>
                   </li>
                   <li className="dropdown">
@@ -121,7 +114,7 @@ const Header: React.FC  = () => {
                     ></span>
                     <ul className={`dropdown-menu slideInUp ${activeDropdown === 'dropdown01' ? 'show' : ''}`} aria-labelledby="dropdown01">
                       <li>
-                        <Link to="!#">Fill manual form</Link>
+                        <Link to="/add-product">Fill manual form</Link>
                       </li>
                       <li>
                         <Link to="!#">Automatically fill form from attachment or text</Link>
@@ -141,7 +134,7 @@ const Header: React.FC  = () => {
             <div className={styles.hdrSignBtn}>
               <Link to={'#'}>
                 <img
-                  src='images/profile-img.png'
+                  src={userInfo?.profileImage || noProfileImage}
                   alt='Profile'
                   className={styles.hdrProfileImg}
                 />
