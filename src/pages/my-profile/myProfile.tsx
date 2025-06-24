@@ -164,7 +164,7 @@ const MyProfile: React.FC = () => {
                       />
                      {editableForm && <ErrorMessage name="accountEmail" component="p" className={styles.errorMessage} />}
                     </li>
-                    <li className={!editableForm ? "" : "inputDisabled"}>
+                    <li className={!editableForm ? "" : "inputFocus"}>
                       <label>Invoice Email</label>
                       <Field
                         name='invoiceEmail'

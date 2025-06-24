@@ -295,6 +295,14 @@ body.body-fixed::before {
 
 
 
+
+.inputFocus input{
+    background-color: #d9efff !important;
+    border-color: #89cdff !important;
+}
+
+
+
 /*=========== Menu Responsive Style ===========*/
   @media only screen and (min-width:992px){
     .navbar-toggler{
