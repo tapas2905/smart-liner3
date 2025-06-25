@@ -4,7 +4,7 @@ import Footer from "../../../components/footer/footer";
 import styles from "./productList.module.scss";
 import api from "../../../services/api";
 import { ProductListViewType } from "../../../types/productType";
-import noProductImage from "../../../assets/images/No-Product-Image-Available.png";
+import noProductImage from "../../../assets/images/no-product-img.png";
 import Pagination from "@mui/material/Pagination";
 import { ProductListInterface } from "../../../interfaces/productInterface";
 import alert from "../../../services/alert";
@@ -140,7 +140,7 @@ const ProductList: React.FC = () => {
                   </li> */}
                   <li className={styles.productDownloadCsv}>
                     <button onClick={downloadCsv} disabled={downloadingCsv}>
-                      Download all products and CSV
+                      Download all products as CSV
                     </button>
                   </li>
                 </ul>

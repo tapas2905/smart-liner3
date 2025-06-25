@@ -297,8 +297,8 @@ body.body-fixed::before {
 
 
 .inputFocus input{
-    background-color: #d9efff !important;
-    border-color: #89cdff !important;
+    background-color: #ffffff  !important;
+    border-color: #a5a5a5  !important;
 }
 
 

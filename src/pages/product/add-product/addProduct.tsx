@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, Form, FieldArray, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import alert from '../../../services/alert';
@@ -7,92 +7,145 @@ import Footer from '../../../components/footer/footer';
 import styles from './addProduct.module.scss';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-
-// Define the shape of a single item in a purchase order
-interface Item {
-  itemId: any;
-  quantity: number;
-}
-
-// Define the shape of a single purchase order
-interface PurchaseOrder {
-  purchaseOrder: string;
-  purchaseDate?: string; // Optional
-  recipientFirstName: string;
-  recipientLastName: string;
-  recipientAddress1: string;
-  recipientAddress2?: string; // Optional
-  recipientCountryCode: string;
-  recipientState: string;
-  recipientZip: string;
-  recipientPhoneNumber?: string; // Optional
-  items: Item[];
-}
-
-// Define the shape of the entire form data, which is an array of PurchaseOrders
-interface FormData {
-  purchaseOrders: PurchaseOrder[];
-}
+import { FormData, PurchaseOrder, Country, State } from '../../../interfaces/productInterface';
+import api from '../../../services/api';
+import endpoints from '../../../helpers/endpoints';
+import debounce from 'lodash.debounce';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct: React.FC = () => {
-  const itemList = [
-    {name: "Tapas", id: "1"},
-    {name: "Sanju", id: "2"},
-    {name: "Rohan", id: "3"},
-  ];
+  const [items, setItems] = useState<any[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [states, setStates] = useState<State[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const debouncedGetProductSkuList = useMemo(
+    () =>
+      debounce(async (input: string) => {
+        setLoading(true);
+        try {
+          const res = await api.get(`${endpoints.product.getProducts}?page=1&page_size=15${input ? `&keyword=${input}` : ""}`);
+          if (res.status === 200) {
+            setItems(res.data.items);
+          }
+        } catch (err: any) {
+          alert(err?.response?.data?.detail || err?.message, "error");
+        } finally {
+          setLoading(false);
+        }
+      }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedGetProductSkuList(searchQuery);
+    return () => {
+      debouncedGetProductSkuList.cancel();
+    };
+  }, [searchQuery, debouncedGetProductSkuList]);
+
+  useEffect(()=> {
+    getCountries();
+  }, []);
+
+  const getCountries = async () => {
+    try {
+      const res = await api.get(endpoints.product.getCountries);
+      if(res.status === 200) {
+        setCountries(res.data);
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+    }
+  }
+   const getStates = async (countryId: string) => {
+    try {
+      const res = await api.get(endpoints.product.getStates(countryId));
+      if(res.status === 200) {
+        setStates(res.data);
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+    }
+  }
+
   // Yup validation schema for a single item
   const itemSchema = Yup.object().shape({
-    itemId: Yup.object().required('Item is required'),
+    itemSkuId: Yup.object().required("Item is required"),
     quantity: Yup.number()
-      .required('Quantity is required')
-      .min(1, 'Quantity must be at least 1')
-      .integer('Quantity must be an integer'),
+      .required("Quantity is required")
+      .min(1, "Quantity must be at least 1")
+      .integer("Quantity must be an integer"),
   });
 
   // Yup validation schema for a single purchase order
   const purchaseOrderSchema = Yup.object().shape({
-    purchaseOrder: Yup.string().required('Purchase Order is required'),
+    purchaseOrder: Yup.string().required("Purchase Order is required"),
     purchaseDate: Yup.string().optional(),
-    recipientFirstName: Yup.string().required('Recipient First Name is required'),
-    recipientLastName: Yup.string().required('Recipient Last Name is required'),
-    recipientAddress1: Yup.string().required('Recipient Address 1 is required'),
+    recipientFirstName: Yup.string().required(
+      "Recipient First Name is required"
+    ),
+    recipientLastName: Yup.string().required("Recipient Last Name is required"),
+    recipientAddress1: Yup.string().required("Recipient Address 1 is required"),
     recipientAddress2: Yup.string().optional(),
-    recipientCountryCode: Yup.string().required('Recipient Country Code is required'),
-    recipientState: Yup.string().required('Recipient State is required'),
-    recipientZip: Yup.string().required('Recipient Zip is required').matches(/^\d{5}(-\d{4})?$/, 'Invalid Zip Code'),
-    recipientPhoneNumber: Yup.string().optional().matches(/^\d{10}$/, 'Phone number must be 10 digits'),
-    items: Yup.array().of(itemSchema).min(1, 'At least one item is required'),
+    recipientCountryCode: Yup.string().required(
+      "Recipient Country Code is required"
+    ),
+    recipientState: Yup.string().required("Recipient State is required"),
+    recipientZip: Yup.string()
+      .required("Recipient Zip is required")
+      .matches(/^\d{5}(-\d{4})?$/, "Invalid Zip Code"),
+    recipientPhoneNumber: Yup.string()
+      .optional()
+      .matches(/^\d{10}$/, "Phone number must be 10 digits"),
+    items: Yup.array().of(itemSchema).min(1, "At least one item is required"),
   });
 
   // Yup validation schema for the entire form (an array of purchase orders)
   const validationSchema = Yup.object().shape({
-    purchaseOrders: Yup.array().of(purchaseOrderSchema).min(1, 'At least one Purchase Order is required'),
+    purchaseOrders: Yup.array()
+      .of(purchaseOrderSchema)
+      .min(1, "At least one Purchase Order is required"),
   });
 
   // Initial values for a new, empty purchase order
   const initialNewPurchaseOrder: PurchaseOrder = {
-    purchaseOrder: '',
-    purchaseDate: '',
-    recipientFirstName: '',
-    recipientLastName: '',
-    recipientAddress1: '',
-    recipientAddress2: '',
-    recipientCountryCode: '',
-    recipientState: '',
-    recipientZip: '',
-    recipientPhoneNumber: '',
-    items: [{ itemId: null, quantity: 1 }],
+    purchaseOrder: "",
+    purchaseDate: "",
+    recipientFirstName: "",
+    recipientLastName: "",
+    recipientAddress1: "",
+    recipientAddress2: "",
+    recipientCountryCode: "",
+    recipientState: "",
+    recipientZip: "",
+    recipientPhoneNumber: "",
+    items: [{ itemSkuId: null, quantity: 1 }],
   };
 
   const initialFormValues: FormData = {
     purchaseOrders: [initialNewPurchaseOrder], // Start with one empty purchase order
   };
 
-  const handleSubmit = (values: FormData) => {
-    const payload = values.purchaseOrders.map((po) => ({...po, items: po.items.map((item) => ({itemId: item.itemId?.id, quantity: item.quantity}))}));
-    console.log(payload);
-    
-   alert("Form submitted successfully", "success");
+  const handleSubmit = async (values: FormData) => {
+    try {
+      const payload = values.purchaseOrders.map((po) => ({
+      ...po,
+      items: po.items.map((item) => ({
+        itemSkuId: item.itemSkuId?.skuId,
+        quantity: item.quantity,
+      })),
+    }));
+    const res = await api.post(endpoints.product.placeOrder, payload);
+    if(res.data) {
+      alert(res.data?.message, "success");
+      navigate("/");
+    }
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+    }
   };
 
   return (
@@ -113,15 +166,13 @@ const AddProduct: React.FC = () => {
         >
           {({ values, setFieldValue, errors, touched }) => (
           <Form className="main-form">
-           <p> {JSON.stringify(values)}</p>
-
             <FieldArray name="purchaseOrders">
               {({ push, remove }) => (
                 <>
                   {values.purchaseOrders.map((po, poIndex) => (
                     <div key={poIndex} className={styles.addProductFormBox}>
                         <div className={styles.purchaseOrderTitleRow}>
-                          <h2 className={styles.purchaseOrderTitle}>Purchase Order {poIndex + 1}</h2>
+                          <h2 className={styles.purchaseOrderTitle}>Purchase Order #{poIndex + 1}</h2>
                           {values.purchaseOrders.length > 1 && (
                             <button
                               type="button"
@@ -158,9 +209,6 @@ const AddProduct: React.FC = () => {
                                 type="date"
                                 className={styles.noCalenderIcon}
                               />
-                              {/* <div className={styles.calenderIcon}>
-                                <img src='images/calender-icon.svg' alt='calender icon' />
-                              </div> */}
                               <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseDate`} component="p" className={styles.errorMessage} />
                             </li>
                             <li>
@@ -216,11 +264,21 @@ const AddProduct: React.FC = () => {
                                 Recipient Country Code
                               </label>
                               <Field
-                                id={`purchaseOrders.${poIndex}.recipientCountryCode`}
-                                name={`purchaseOrders.${poIndex}.recipientCountryCode`}
-                                type="text"
-                                placeholder="Enter Country Code"
-                              />
+                              as="select"
+                              id={`purchaseOrders.${poIndex}.recipientCountryCode`}
+                              value={values.purchaseOrders[poIndex].recipientCountryCode}
+                              // name={`purchaseOrders.${poIndex}.recipientCountryCode`}
+                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                e.preventDefault();
+                                const { value } = e.target;
+                                setFieldValue(`purchaseOrders.${poIndex}.recipientCountryCode`, value);
+                                setFieldValue(`purchaseOrders.${poIndex}.recipientState`, '');
+                                if(value) getStates(value);
+                              }}
+                              >
+                                <option value="">Select country code</option>
+                                {countries.map((country: Country) => <option key={country.id} value={country.id}>{country.threeLetterCode}</option>)}
+                              </Field>
                               <ErrorMessage name={`purchaseOrders.${poIndex}.recipientCountryCode`} component="p" className={styles.errorMessage} />
                             </li>
                             <li className={styles.stateZipRow}>
@@ -229,11 +287,15 @@ const AddProduct: React.FC = () => {
                                   Recipient State
                                 </label>
                                 <Field
+                                  as="select"
                                   id={`purchaseOrders.${poIndex}.recipientState`}
                                   name={`purchaseOrders.${poIndex}.recipientState`}
                                   type="text"
                                   placeholder="Enter State"
-                                />
+                                >
+                                  <option value="">Select state</option>
+                                  {states.map((state: State) => ( <option key={state.id} value={state.id}>{state.name}</option>))}
+                                </Field>
                                 <ErrorMessage name={`purchaseOrders.${poIndex}.recipientState`} component="p" className={styles.errorMessage} />
                               </div>
                               <div className={styles.zipField}>
@@ -245,6 +307,12 @@ const AddProduct: React.FC = () => {
                                   name={`purchaseOrders.${poIndex}.recipientZip`}
                                   type="text"
                                   placeholder="Enter Zip Code"
+                                  maxLength="5"
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  const { value } = e.target;
+                                  const strippedValue = value.replace(/\D/g, '');
+                                  setFieldValue(`purchaseOrders.${poIndex}.recipientZip`, strippedValue);
+                                }}
                                 />
                                 <ErrorMessage name={`purchaseOrders.${poIndex}.recipientZip`} component="p" className={styles.errorMessage} />
                               </div>
@@ -258,6 +326,12 @@ const AddProduct: React.FC = () => {
                                 name={`purchaseOrders.${poIndex}.recipientPhoneNumber`}
                                 type="text"
                                 placeholder="Enter Phone Number"
+                                maxLength="10"
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  const { value } = e.target;
+                                  const strippedValue = value.replace(/\D/g, '');
+                                  setFieldValue(`purchaseOrders.${poIndex}.recipientPhoneNumber`, strippedValue);
+                                }}
                               />
                               <ErrorMessage name={`purchaseOrders.${poIndex}.recipientPhoneNumber`} component="p" className={styles.errorMessage} />
                             </li>
@@ -281,20 +355,36 @@ const AddProduct: React.FC = () => {
                                   {values.purchaseOrders[poIndex].items.map((item, itemIndex) => (
                                     <ul key={itemIndex}>
                                       <li data-label="Item" className={styles.selectItemDropdown}>
-                                        {/* <Field as="select" name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemId`}>
-                                          <option value="volvo">SA0401/SB401</option>
-                                          <option value="saab">Saab</option>
-                                          <option value="mercedes">Mercedes</option>
-                                          <option value="audi">Audi</option>
-                                        </Field> */}
-                                        <Autocomplete
-                                         options={itemList}
-                                         value={values.purchaseOrders[poIndex].items[itemIndex].itemId || null}
-                                          getOptionLabel={(option) => option.name}
-                                          onChange={(event: any, newValue: any | null) => {setFieldValue( `purchaseOrders.${poIndex}.items.${itemIndex}.itemId`, newValue)}}
-                                          renderInput={(params) => <TextField {...params}
-                                          label="Select item" 
-                                          />}
+                                         <Autocomplete
+                                            options={items}
+                                            value={values.purchaseOrders[poIndex].items[itemIndex].itemSkuId || null}
+                                            getOptionLabel={(option) => option?.sku}
+                                            onChange={(event: any, newValue: any | null) => {
+                                              setFieldValue(`purchaseOrders.${poIndex}.items.${itemIndex}.itemSkuId`, newValue);
+                                            }}
+                                            onInputChange={(event, newInputValue) => {
+                                              setSearchQuery(newInputValue);
+                                            }}
+                                            loading={loading}
+                                            renderOption={(props, option) => (
+                                              <li {...props} key={itemIndex + option.skuId}>
+                                              {option.sku}
+                                              </li>
+                                              )}
+                                            renderInput={(params) => (
+                                              <TextField
+                                                {...params}
+                                                label="Select item"
+                                                InputProps={{
+                                                  ...params.InputProps,
+                                                  endAdornment: (
+                                                    <>
+                                                      {params.InputProps.endAdornment}
+                                                    </>
+                                                  ),
+                                                }}
+                                              />
+                                            )}
                                           />
                                         <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemId`} component="p" className="error-message" />
                                       </li>
@@ -348,7 +438,10 @@ const AddProduct: React.FC = () => {
                           <div className={styles.addItem}>
                             <button
                               type="button"
-                              onClick={() => setFieldValue(`purchaseOrders.${poIndex}.items`, [...values.purchaseOrders[poIndex].items, { itemId: null, quantity: 1 }])}
+                              onClick={() => {
+                                setFieldValue(`purchaseOrders.${poIndex}.items`, [...values.purchaseOrders[poIndex].items, { itemSkuId: null, quantity: 1 }]);
+                                setSearchQuery('');
+                              }}
                             >
                               <i className="fa-solid fa-circle-plus"></i>
                               <span>Add Additional Item</span>
