@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 const AddProduct: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
-  const [states, setStates] = useState<State[]>([]);
+  const [statesMap, setStatesMap] = useState<Map<number, State[]>>(new Map());
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
@@ -60,16 +60,17 @@ const AddProduct: React.FC = () => {
       alert(err?.response?.data?.detail || err?.message, "error");
     }
   }
-   const getStates = async (countryId: string) => {
-    try {
-      const res = await api.get(endpoints.product.getStates(countryId));
-      if(res.status === 200) {
-        setStates(res.data);
-      }
-    } catch (err: any) {
-      alert(err?.response?.data?.detail || err?.message, "error");
+  const getStates = async (countryId: string, poIndex: number) => {
+  try {
+    const res = await api.get(endpoints.product.getStates(countryId));
+    if(res.status === 200) {
+      setStatesMap(prevMap => new Map(prevMap).set(poIndex, res.data));
     }
+  } catch (err: any) {
+    alert(err?.response?.data?.detail || err?.message, "error");
   }
+}
+  
 
   // Yup validation schema for a single item
   const itemSchema = Yup.object().shape({
@@ -131,6 +132,7 @@ const AddProduct: React.FC = () => {
 
   const handleSubmit = async (values: FormData) => {
     try {
+      setLoading(true);
       const payload = values.purchaseOrders.map((po) => ({
       ...po,
       items: po.items.map((item) => ({
@@ -145,6 +147,8 @@ const AddProduct: React.FC = () => {
     }
     } catch (err: any) {
       alert(err?.response?.data?.detail || err?.message, "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,7 +180,14 @@ const AddProduct: React.FC = () => {
                           {values.purchaseOrders.length > 1 && (
                             <button
                               type="button"
-                              onClick={() => remove(poIndex)}
+                              onClick={() => {
+                                remove(poIndex);
+                                setStatesMap(prevMap => {
+                                  const newMap = new Map(prevMap);
+                                  newMap.delete(poIndex);
+                                  return newMap;
+                                });
+                              }}
                               className={styles.removePoButton}
                             >
                               <i className="fa-solid fa-xmark"></i>
@@ -263,18 +274,24 @@ const AddProduct: React.FC = () => {
                               <label htmlFor={`purchaseOrders.${poIndex}.recipientCountryCode`}>
                                 Recipient Country Code
                               </label>
-                              <Field
-                              as="select"
-                              id={`purchaseOrders.${poIndex}.recipientCountryCode`}
-                              value={values.purchaseOrders[poIndex].recipientCountryCode}
-                              // name={`purchaseOrders.${poIndex}.recipientCountryCode`}
-                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                e.preventDefault();
-                                const { value } = e.target;
-                                setFieldValue(`purchaseOrders.${poIndex}.recipientCountryCode`, value);
-                                setFieldValue(`purchaseOrders.${poIndex}.recipientState`, '');
-                                if(value) getStates(value);
-                              }}
+                             <Field
+                                as="select"
+                                id={`purchaseOrders.${poIndex}.recipientCountryCode`}
+                                value={values.purchaseOrders[poIndex].recipientCountryCode}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                  const { value } = e.target;
+                                  setFieldValue(`purchaseOrders.${poIndex}.recipientCountryCode`, value);
+                                  setFieldValue(`purchaseOrders.${poIndex}.recipientState`, '');
+                                  if(value) {
+                                    getStates(value, poIndex);
+                                  } else {
+                                    setStatesMap(prevMap => {
+                                      const newMap = new Map(prevMap);
+                                      newMap.delete(poIndex); // Clear states for this PO if no country selected
+                                      return newMap;
+                                    });
+                                  }
+                                }}
                               >
                                 <option value="">Select country code</option>
                                 {countries.map((country: Country) => <option key={country.id} value={country.id}>{country.threeLetterCode}</option>)}
@@ -286,15 +303,16 @@ const AddProduct: React.FC = () => {
                                 <label htmlFor={`purchaseOrders.${poIndex}.recipientState`}>
                                   Recipient State
                                 </label>
-                                <Field
+                               <Field
                                   as="select"
                                   id={`purchaseOrders.${poIndex}.recipientState`}
                                   name={`purchaseOrders.${poIndex}.recipientState`}
-                                  type="text"
                                   placeholder="Enter State"
                                 >
                                   <option value="">Select state</option>
-                                  {states.map((state: State) => ( <option key={state.id} value={state.id}>{state.name}</option>))}
+                                  {(statesMap.get(poIndex) || []).map((state: State) => (
+                                    <option key={state.id} value={state.id}>{state.name}</option>
+                                  ))}
                                 </Field>
                                 <ErrorMessage name={`purchaseOrders.${poIndex}.recipientState`} component="p" className={styles.errorMessage} />
                               </div>
@@ -386,7 +404,7 @@ const AddProduct: React.FC = () => {
                                               />
                                             )}
                                           />
-                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemId`} component="p" className="error-message" />
+                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemSkuId`} component="p" className="error-message" />
                                       </li>
                                       <li data-label="Quantity" className={styles.quantityField}>
                                         <div className={styles.quantityBtnInput}>
@@ -460,6 +478,7 @@ const AddProduct: React.FC = () => {
                           type="button"
                           onClick={() => push(initialNewPurchaseOrder)}
                           className={styles.addPoBtn}
+                          disabled={loading}
                         >
                           <span>Add additional PO</span>
                         </button>
@@ -472,6 +491,7 @@ const AddProduct: React.FC = () => {
                         <button
                           type="submit"
                           className={styles.submitBtn}
+                          disabled={loading}
                         >
                           Submit Purchase Items
                         </button>
