@@ -404,7 +404,7 @@ const AddProduct: React.FC = () => {
                                               />
                                             )}
                                           />
-                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemSkuId`} component="p" className="error-message" />
+                                        <ErrorMessage name={`purchaseOrders.${poIndex}.items.${itemIndex}.itemSkuId`} component="p" className={styles.errorMessage} />
                                       </li>
                                       <li data-label="Quantity" className={styles.quantityField}>
                                         <div className={styles.quantityBtnInput}>
