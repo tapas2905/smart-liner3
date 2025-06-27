@@ -325,4 +325,45 @@
       }
     }
   }
+
+
+  .uploadFileBox{
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 2px dashed $secondaryColor;
+    padding: 40px 25px;
+    text-align: center;
+    i{
+      display: block;
+      font-size: 60px;
+      color: $secondaryColor;
+      margin-bottom: 15px;
+    }
+    h2{
+      font-size: 35px;
+      color: $blackColor;
+      font-weight: 800;
+    }
+    p{
+      font-size: 18px;
+      color: $textColor;
+      font-weight: 600;
+      margin: 10px 0 0 0;
+    }
+    .addProductInputFileField{
+      button{
+        border: 1px solid $secondaryColor;
+        padding: 12px 30px;
+        border-radius: 6px;
+        background-color: transparent;
+        margin: 35px 0 10px 0;
+        font-size: 18px;
+        color: $secondaryColor;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+  }
 }

@@ -218,13 +218,52 @@ const AddProduct: React.FC = () => {
       alert(error?.response?.data?.detail || error?.message, "error");
     }
   };
+
+
+// Custom Input Type File
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState("");
+
+  const handleClick = () => {
+    fileInputRef.current?.click(); // safe optional chaining
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
+
+
+
   
   return (
     <>
     <div className={styles.addProductBdyPrt}>
       {isAttachFile && (
-        <div>
-          <input type="file" />
+        <div className={styles.uploadFileBox}>
+          <i className="fa-solid fa-cloud-arrow-up"></i>
+          <h2>Upload your file here</h2>
+          <p>Files supported: TXT, HTML, CSS</p>
+          <div className={styles.addProductInputFileField}>
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleChange}
+              style={{ display: "none" }}
+            />
+
+            {/* Custom button */}
+            <button type="button" onClick={handleClick}>
+              Browse
+            </button>
+
+            {/* Optional: show selected file name */}
+            {fileName && <p>Selected file: {fileName}</p>}
+          </div>
+          <p>Maximum size: 2MB</p>
         </div>
       )}
       {!isAttachFile && (
