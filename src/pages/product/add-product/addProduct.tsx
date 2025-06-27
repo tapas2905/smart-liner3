@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Formik, Form, FieldArray, Field, ErrorMessage } from 'formik';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Formik, Form, FieldArray, Field, ErrorMessage, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import alert from '../../../services/alert';
-import Header from '../../../components/header/header';
-import Footer from '../../../components/footer/footer';
 import styles from './addProduct.module.scss';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -11,7 +9,8 @@ import { FormData, PurchaseOrder, Country, State } from '../../../interfaces/pro
 import api from '../../../services/api';
 import endpoints from '../../../helpers/endpoints';
 import debounce from 'lodash.debounce';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import moment from 'moment';
 
 const AddProduct: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -19,7 +18,11 @@ const AddProduct: React.FC = () => {
   const [statesMap, setStatesMap] = useState<Map<number, State[]>>(new Map());
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [poFormLoading, setPoFormLoading] = useState(false);
+  const [isAttachFile, setIsAttachFile] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const formikRef = useRef<FormikProps<FormData>>(null);
 
   const debouncedGetProductSkuList = useMemo(
     () =>
@@ -47,8 +50,9 @@ const AddProduct: React.FC = () => {
   }, [searchQuery, debouncedGetProductSkuList]);
 
   useEffect(()=> {
+    setIsAttachFile(!!searchParams.get("attachFile"));
     getCountries();
-  }, []);
+  }, [searchParams]);
 
   const getCountries = async () => {
     try {
@@ -132,7 +136,7 @@ const AddProduct: React.FC = () => {
 
   const handleSubmit = async (values: FormData) => {
     try {
-      setLoading(true);
+      setPoFormLoading(true);
       const payload = values.purchaseOrders.map((po) => ({
       ...po,
       items: po.items.map((item) => ({
@@ -148,17 +152,83 @@ const AddProduct: React.FC = () => {
     } catch (err: any) {
       alert(err?.response?.data?.detail || err?.message, "error");
     } finally {
-      setLoading(false);
+      setPoFormLoading(false);
     }
   };
+  
+   const getProductSkuById = async (skuId: number) => {
+    try {
+      const res = await api.get(`${endpoints.product.getProducts}?skuId=${skuId}`);
+      if (res.status === 200 && res.data.items.length > 0) {
+        return res.data.items[0]; // Assuming the API returns an array and we need the first item
+      }
+      return null;
+    } catch (err: any) {
+      alert(err?.response?.data?.detail || err?.message, "error");
+      return null;
+    }
+  };
+  const patchPoData = async (setValues: Function) => {
+    try {
+      const res = await api.get("order/get-purchase-order");
+      if (res.status === 200) {
+        const receivedData: PurchaseOrder[] = res.data;
 
+        // Create a map for states based on country codes for existing POs
+        const newStatesMap = new Map<number, State[]>();
+        for (let i = 0; i < receivedData.length; i++) {
+          const po = receivedData[i];
+          if (po.recipientCountryCode) {
+            try {
+              const stateRes = await api.get(endpoints.product.getStates(po.recipientCountryCode));
+              if (stateRes.status === 200) {
+                newStatesMap.set(i, stateRes.data);
+              }
+            } catch (err: any) {
+              alert(`Error fetching states for country ${po.recipientCountryCode}: ${err?.response?.data?.detail || err?.message}`, "error");
+            }
+          }
+        }
+        setStatesMap(newStatesMap);
+
+        // Transform the received data to match Formik's expected structure
+        const patchedPurchaseOrders: PurchaseOrder[] = await Promise.all(
+          receivedData.map(async (po) => {
+            const transformedItems = await Promise.all(
+              po.items.map(async (item) => {
+                // Fetch the full item SKU details using itemSkuId
+                const itemDetails = await getProductSkuById(item.itemSkuId);
+                return {
+                  itemSkuId: itemDetails, // Autocomplete expects an object here
+                  quantity: item.quantity,
+                };
+              })
+            );
+
+            return {
+              ...po,
+              items: transformedItems,
+            };
+          })
+        );
+        // Set the transformed data to the Formik form
+        setValues({ purchaseOrders: patchedPurchaseOrders });
+      }
+    } catch (error: any) {
+      alert(error?.response?.data?.detail || error?.message, "error");
+    }
+  };
+  
   return (
     <>
-
-    <Header/>
-
     <div className={styles.addProductBdyPrt}>
-      <div className={styles.container}>
+      {isAttachFile && (
+        <div>
+          <input type="file" />
+        </div>
+      )}
+      {!isAttachFile && (
+        <div className={styles.container}>
         <div className={styles.pageTitle}>
           <h1>Please Enter Your Order For Submission</h1>
         </div>
@@ -167,6 +237,8 @@ const AddProduct: React.FC = () => {
           initialValues={initialFormValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize = {true}
+          innerRef={formikRef}
         >
           {({ values, setFieldValue, errors, touched }) => (
           <Form className="main-form">
@@ -218,6 +290,7 @@ const AddProduct: React.FC = () => {
                                 id={`purchaseOrders.${poIndex}.purchaseDate`}
                                 name={`purchaseOrders.${poIndex}.purchaseDate`}
                                 type="date"
+                                max={moment().format('YYYY-MM-DD')}
                                 className={styles.noCalenderIcon}
                               />
                               <ErrorMessage name={`purchaseOrders.${poIndex}.purchaseDate`} component="p" className={styles.errorMessage} />
@@ -478,7 +551,7 @@ const AddProduct: React.FC = () => {
                           type="button"
                           onClick={() => push(initialNewPurchaseOrder)}
                           className={styles.addPoBtn}
-                          disabled={loading}
+                          disabled={poFormLoading}
                         >
                           <span>Add additional PO</span>
                         </button>
@@ -491,7 +564,7 @@ const AddProduct: React.FC = () => {
                         <button
                           type="submit"
                           className={styles.submitBtn}
-                          disabled={loading}
+                          disabled={poFormLoading}
                         >
                           Submit Purchase Items
                         </button>
@@ -507,10 +580,8 @@ const AddProduct: React.FC = () => {
         </Formik>        
 
       </div>
+      )}
     </div>
-
-    <Footer/>
-
     </>
   );
 };

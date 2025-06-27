@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../../components/header/header";
-import Footer from "../../../components/footer/footer";
 import styles from "./productList.module.scss";
 import api from "../../../services/api";
 import { ProductListViewType } from "../../../types/productType";
@@ -96,7 +94,6 @@ const ProductList: React.FC = () => {
 
   return (
     <>
-      <Header/>
 
       <div className={styles.productListBdyPrt}>
         
@@ -227,8 +224,6 @@ const ProductList: React.FC = () => {
         </div>
 
       </div>
-
-      <Footer/>
     </>
   );
 };

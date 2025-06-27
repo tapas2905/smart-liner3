@@ -14,17 +14,17 @@ const Footer: React.FC  = () => {
             <h2>Customer Service</h2>
             <ul className={styles.footerMenu}>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/pages/help-center'}>
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/pages/frequently-asked-questions'}>
                   Frequently Asked Questions
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/pages/contact-us'}>
                   Contact Us
                 </Link>
               </li>
@@ -34,17 +34,17 @@ const Footer: React.FC  = () => {
             <h2>Information</h2>
             <ul className={styles.footerMenu}>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/products/floor-liners'}>
                   Information
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/pages/our-story'}>
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.smartliner-usa.com/pages/our-policies'}>
                   Policies & Terms of Service
                 </Link>
               </li>
@@ -54,22 +54,22 @@ const Footer: React.FC  = () => {
             <h2>Follow Us</h2>
             <ul className={styles.footerSocialMedia}>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.facebook.com/SmartlinerUSA/'} target='_blank'>
                   <img src='images/facebook-icon.svg' alt='facebook icon' />
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.instagram.com/smartlinerusa/?hl=en'} target='_blank'>
                   <img src='images/instagram-icon.svg' alt='instagram icon' />
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.youtube.com/@smartliner'} target='_blank'>
                   <img src='images/youtube-icon.svg' alt='youtube icon' />
                 </Link>
               </li>
               <li>
-                <Link to={'#'}>
+                <Link to={'https://www.tiktok.com/@smartliner'} target='_blank'>
                   <img src='images/tiktok-icon.svg' alt='tiktok icon' />
                 </Link>
               </li>

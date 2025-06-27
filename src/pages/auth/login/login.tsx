@@ -19,8 +19,6 @@ import {
   SendOtpResponse,
 } from "../../../interfaces/authInterface";
 import { jwtDecode } from "jwt-decode";
-import Header from "../../../components/header/header";
-import Footer from "../../../components/footer/footer";
 import styles from './login.module.scss';
 import endpoints from "../../../helpers/endpoints";
 
@@ -101,8 +99,6 @@ const Login: React.FC = () => {
 
   return (
     <>
-    <Header/>
-
     <div className={styles.loginBodyPrt}>
       <div className={styles.container}>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -144,11 +140,11 @@ const Login: React.FC = () => {
                     disabled={loading}
                     className={styles.submitBtn}
                   >
-                    {loading ? "Logging in..." : "Continue"}
+                    Continue
                   </button>
                 </div>
                 <p className={styles.loginTermsService}>
-                  <Link to="#">
+                  <Link to="https://www.smartliner-usa.com/pages/our-policies">
                     Policies & Terms of Service
                   </Link>
                 </p>
@@ -158,8 +154,6 @@ const Login: React.FC = () => {
         </GoogleOAuthProvider>
       </div>
     </div>
-
-    <Footer/>
     </>
   );
 };
