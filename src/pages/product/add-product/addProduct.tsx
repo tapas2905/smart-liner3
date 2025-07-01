@@ -5,12 +5,13 @@ import alert from '../../../services/alert';
 import styles from './addProduct.module.scss';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { FormData, PurchaseOrder, Country, State } from '../../../interfaces/productInterface';
+import { FormDataField, PurchaseOrder, Country, State } from '../../../interfaces/productInterface';
 import api from '../../../services/api';
 import endpoints from '../../../helpers/endpoints';
 import debounce from 'lodash.debounce';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import moment from 'moment';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const AddProduct: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -20,9 +21,11 @@ const AddProduct: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [poFormLoading, setPoFormLoading] = useState(false);
   const [isAttachFile, setIsAttachFile] = useState(false);
+  const [isUploadFile, setIsUploadFile] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const formikRef = useRef<FormikProps<FormData>>(null);
+  const formikRef = useRef<FormikProps<FormDataField>>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const debouncedGetProductSkuList = useMemo(
     () =>
@@ -52,6 +55,7 @@ const AddProduct: React.FC = () => {
   useEffect(()=> {
     setIsAttachFile(!!searchParams.get("attachFile"));
     getCountries();
+    formikRef.current?.setValues(initialFormValues);
   }, [searchParams]);
 
   const getCountries = async () => {
@@ -130,112 +134,135 @@ const AddProduct: React.FC = () => {
     items: [{ itemSkuId: null, quantity: 1 }],
   };
 
-  const initialFormValues: FormData = {
+  const initialFormValues: FormDataField = {
     purchaseOrders: [initialNewPurchaseOrder], // Start with one empty purchase order
   };
 
-  const handleSubmit = async (values: FormData) => {
+  // Submit Purchase Order 
+   const handleSubmit = async (values: FormDataField) => {
     try {
       setPoFormLoading(true);
       const payload = values.purchaseOrders.map((po) => ({
-      ...po,
-      items: po.items.map((item) => ({
-        itemSkuId: item.itemSkuId?.skuId,
-        quantity: item.quantity,
-      })),
-    }));
-    const res = await api.post(endpoints.product.placeOrder, payload);
-    if(res.data) {
-      alert(res.data?.message, "success");
-      navigate("/");
-    }
+        ...po,
+        items: po.items.map((item) => ({
+          itemSkuId: item.itemSkuId?.skuId,
+          quantity: item.quantity,
+        })),
+      }));
+      const res = await api.post(endpoints.product.placeOrder, payload);
+      if (res.data) {
+        alert(res.data?.message, "success");
+        navigate("/");
+      }
     } catch (err: any) {
       alert(err?.response?.data?.detail || err?.message, "error");
     } finally {
       setPoFormLoading(false);
     }
   };
-  
-   const getProductSkuById = async (skuId: number) => {
-    try {
-      const res = await api.get(`${endpoints.product.getProducts}?skuId=${skuId}`);
-      if (res.status === 200 && res.data.items.length > 0) {
-        return res.data.items[0]; // Assuming the API returns an array and we need the first item
-      }
-      return null;
-    } catch (err: any) {
-      alert(err?.response?.data?.detail || err?.message, "error");
-      return null;
-    }
-  };
-  const patchPoData = async (setValues: Function) => {
-    try {
-      const res = await api.get("order/get-purchase-order");
-      if (res.status === 200) {
-        const receivedData: PurchaseOrder[] = res.data;
 
-        // Create a map for states based on country codes for existing POs
-        const newStatesMap = new Map<number, State[]>();
-        for (let i = 0; i < receivedData.length; i++) {
-          const po = receivedData[i];
-          if (po.recipientCountryCode) {
-            try {
-              const stateRes = await api.get(endpoints.product.getStates(po.recipientCountryCode));
-              if (stateRes.status === 200) {
-                newStatesMap.set(i, stateRes.data);
-              }
-            } catch (err: any) {
-              alert(`Error fetching states for country ${po.recipientCountryCode}: ${err?.response?.data?.detail || err?.message}`, "error");
+  const patchPoData = async (extractData: PurchaseOrder[]) => {
+    try {
+      const newStatesMap = new Map<number, State[]>();
+      for (let i = 0; i < extractData.length; i++) {
+        const po = extractData[i];
+        if (po.recipientCountryCode) {
+          try {
+            const stateRes = await api.get(
+              endpoints.product.getStates(po.recipientCountryCode)
+            );
+            if (stateRes.status === 200) {
+              newStatesMap.set(i, stateRes.data);
             }
+          } catch (err: any) {
+            alert(
+              `Error fetching states for country ${po.recipientCountryCode}: ${
+                err?.response?.data?.detail || err?.message
+              }`,
+              "error"
+            );
           }
         }
-        setStatesMap(newStatesMap);
-
-        // Transform the received data to match Formik's expected structure
-        const patchedPurchaseOrders: PurchaseOrder[] = await Promise.all(
-          receivedData.map(async (po) => {
-            const transformedItems = await Promise.all(
-              po.items.map(async (item) => {
-                // Fetch the full item SKU details using itemSkuId
-                const itemDetails = await getProductSkuById(item.itemSkuId);
-                return {
-                  itemSkuId: itemDetails, // Autocomplete expects an object here
-                  quantity: item.quantity,
-                };
-              })
-            );
-
-            return {
-              ...po,
-              items: transformedItems,
-            };
-          })
-        );
-        // Set the transformed data to the Formik form
-        setValues({ purchaseOrders: patchedPurchaseOrders });
       }
+      setStatesMap(newStatesMap);
+
+      const patchedPurchaseOrders: PurchaseOrder[] = extractData.map((po) => {
+        const transformedItems = po.items.map((item: any) => {
+          return {
+            itemSkuId: item?.skuId ? item : null,
+            quantity: item.quantity,
+          };
+        });
+
+        return {
+          ...po,
+          purchaseDate: po.purchaseDate
+            ? moment(po.purchaseDate).format("YYYY-MM-DD")
+            : "",
+          recipientCountryCode: po.recipientCountryCode.toString(),
+          recipientState: po.recipientState.toString(),
+          items: transformedItems,
+        };
+      });
+      setIsAttachFile(false);
+      formikRef.current?.setValues({ purchaseOrders: patchedPurchaseOrders });
     } catch (error: any) {
       alert(error?.response?.data?.detail || error?.message, "error");
     }
   };
 
-
-// Custom Input Type File
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fileName, setFileName] = useState("");
-
-  const handleClick = () => {
-    fileInputRef.current?.click(); // safe optional chaining
+  const uploadFileClick = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-    }
-  };
+ const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
 
+  if (!file) {
+    return;
+  }
 
+  const allowedMimeTypes = new Set([
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain",
+    "application/pdf",
+    "text/csv",
+    "message/rfc822",
+  ]);
+
+  const allowedExtensions = new Set([
+    ".csv",
+    ".txt",
+    ".pdf",
+    ".xls",
+    ".xlsx",
+    ".eml",
+  ]);
+  const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+  const isFileTypeAllowed = allowedMimeTypes.has(file.type);
+  const isExtensionAllowed = allowedExtensions.has(fileExtension);
+
+  if (!isFileTypeAllowed && !isExtensionAllowed) {
+    alert("Please select only Excel, text, PDF, CSV, or EML files.", "error");
+    event.target.value = '';
+    return;
+  }
+  setIsUploadFile(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await api.postForm(endpoints.product.extractOrder, formData);
+    if (res.data?.orders) {
+      patchPoData(res.data.orders);
+    } 
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.detail || err.message || "An unexpected error occurred.";
+    alert(errorMessage, "error");
+  } finally {
+    setIsUploadFile(false);
+  }
+};
 
   
   return (
@@ -245,29 +272,25 @@ const AddProduct: React.FC = () => {
         <div className={styles.uploadFileBox}>
           <i className="fa-solid fa-cloud-arrow-up"></i>
           <h2>Upload your file here</h2>
-          <p>Files supported: TXT, HTML, CSS</p>
+          <p>Files supported: TXT, PDF, EXCEL, EML</p>
           <div className={styles.addProductInputFileField}>
-            {/* Hidden file input */}
             <input
               type="file"
               ref={fileInputRef}
               onChange={handleChange}
+              accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .txt, text/plain, .pdf, application/pdf, .eml, message/rfc822"
               style={{ display: "none" }}
             />
 
-            {/* Custom button */}
-            <button type="button" onClick={handleClick}>
-              Browse
+            <button type="button" onClick={uploadFileClick} disabled={isUploadFile}>
+              {!isUploadFile ? 'Browse' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px"/> Please wait...</span>)}
             </button>
 
-            {/* Optional: show selected file name */}
-            {fileName && <p>Selected file: {fileName}</p>}
           </div>
-          <p>Maximum size: 2MB</p>
         </div>
       )}
-      {!isAttachFile && (
-        <div className={styles.container}>
+      
+        <div className={styles.container} style={{display: !isAttachFile ? 'block' : 'none'}}>
         <div className={styles.pageTitle}>
           <h1>Please Enter Your Order For Submission</h1>
         </div>
@@ -470,7 +493,6 @@ const AddProduct: React.FC = () => {
 
                         {/* Items Section for this Purchase Order */}
                         <div className={styles.productItmPrt}>
-                          {/* <h3 className="section-title">Items for PO #{poIndex + 1}</h3> */}
                           <div className={styles.productItmTable}>
                             <div className={styles.proTableHead}>
                               <ul>
@@ -588,7 +610,10 @@ const AddProduct: React.FC = () => {
                       <li>
                         <button
                           type="button"
-                          onClick={() => push(initialNewPurchaseOrder)}
+                          onClick={() => {
+                            push(initialNewPurchaseOrder);
+                            setSearchQuery('');
+                          }}
                           className={styles.addPoBtn}
                           disabled={poFormLoading}
                         >
@@ -619,7 +644,7 @@ const AddProduct: React.FC = () => {
         </Formik>        
 
       </div>
-      )}
+     
     </div>
     </>
   );

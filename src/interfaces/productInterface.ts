@@ -29,7 +29,7 @@ export interface PurchaseOrder {
   items: Item[];
 }
 
-export interface FormData {
+export interface FormDataField {
   purchaseOrders: PurchaseOrder[];
 }
 
