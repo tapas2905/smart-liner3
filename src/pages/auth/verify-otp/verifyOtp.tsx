@@ -37,7 +37,7 @@ const VerifyOtp: React.FC = () => {
 
     // Clear query params from URL
     window.history.replaceState({}, document.title, "/verify-otp");
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const handleVerify = async (value: { otp: string }) => {
     if (!value.otp || !email || !token) {

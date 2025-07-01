@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import styles from "./productList.module.scss";
 import api from "../../../services/api";
@@ -21,8 +22,10 @@ const ProductList: React.FC = () => {
   const [downloadingCsv, setDownloadingCsv] = useState<boolean>(false);
   const delay = 300;
   useEffect(() => {
+    
     getProducts();
   }, [page, size, keyword]);
+
   const getProducts = async () => {
     setLoading(true);
     try {
