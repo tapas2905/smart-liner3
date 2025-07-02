@@ -37,12 +37,20 @@
         }
         .googleSign{
             width: 100%;
-            background-color: $secondaryColor;
-            padding: 15px 15px;
             text-align: center;
-            border-radius: 8px;
-            &>div{
-                height: auto !important;
+            button{
+                width: 100%;
+                background-color: $secondaryColor;
+                padding: 18px 15px;
+                text-align: center;
+                border: none;
+                border-radius: 8px;
+                font-size: 18px;
+                color: $whiteColor;
+                font-weight: 600;
+                &>div{
+                    height: auto !important;
+                }
             }
         }
         .loginOption{

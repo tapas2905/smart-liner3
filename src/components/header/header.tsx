@@ -132,13 +132,15 @@ const Header: React.FC  = () => {
             ref={dropdownRef}
           >
             <div className={styles.hdrSignBtn}>
+              <span>
                 <img
                   src={userInfo?.profileImage || noProfileImage}
                   alt='Profile'
                   className={styles.hdrProfileImg}
                 />
-                <span className={styles.hdrProfileName}>{userInfo?.name}</span>
+                <p className={styles.hdrProfileName}>{userInfo?.name}</p>
                 <i className="fa-solid fa-chevron-down hdr-profile-down-arrow"></i>
+              </span>
             </div>
             {isProfileOpen && (
               <div className={styles.hdrProfileDropdown}>

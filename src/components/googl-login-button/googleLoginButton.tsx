@@ -6,6 +6,7 @@ import alert from "../../services/alert";
 import { LoginResponse } from "../../interfaces/authInterface";
 import { useGoogleLogin } from "@react-oauth/google";
 import { setLogin } from "../../store/userSlice";
+import styles from './googleLoginButton.module.scss';
 
 interface GoogleButtonProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -63,12 +64,12 @@ const GoogleLoginButton: React.FC<GoogleButtonProps> = ({
   });
 
   return (
-    <div>
+    <>
       <button onClick={() => googleLogin()} disabled={loading} type="button">
-        {/* <img src="/images/google-icon.png" alt="Google icon" className={styles.googleIcon} /> */}
+        <img src="images/google-icon.svg" alt="Google icon" className={styles.googleIcon} />
         Sign in with Google
       </button>
-    </div>
+    </>
   );
 };
 
