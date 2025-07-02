@@ -132,7 +132,6 @@ const Header: React.FC  = () => {
             ref={dropdownRef}
           >
             <div className={styles.hdrSignBtn}>
-              <Link to={'#'}>
                 <img
                   src={userInfo?.profileImage || noProfileImage}
                   alt='Profile'
@@ -140,7 +139,6 @@ const Header: React.FC  = () => {
                 />
                 <span className={styles.hdrProfileName}>{userInfo?.name}</span>
                 <i className="fa-solid fa-chevron-down hdr-profile-down-arrow"></i>
-              </Link>
             </div>
             {isProfileOpen && (
               <div className={styles.hdrProfileDropdown}>
@@ -167,7 +165,7 @@ const Header: React.FC  = () => {
             <div className={styles.hdrSignBtn}>
               <Link to={'/login'}>
                 <i className="fa-regular fa-circle-user"></i>
-                <span>Sign In</span>
+                Sign In
               </Link>
             </div>
           </div>

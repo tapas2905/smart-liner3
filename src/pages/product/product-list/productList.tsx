@@ -12,7 +12,7 @@ import endpoints from "../../../helpers/endpoints";
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductListInterface[]>([]);
   const [viewListType, setViewListType] =
-    useState<ProductListViewType>("gridView");
+    useState<ProductListViewType>("listView");
   const [page, setPage] = useState<number>(1);
   const [size] = useState<number>(28);
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -124,11 +124,11 @@ const ProductList: React.FC = () => {
                        />
                     </form>
                   </li>
-                  <li className={styles.productGridListView} onClick={() => selectListViewType('gridView')}>
-                      <img src='images/grid-view-icon.svg' alt='grid view icon' />
-                  </li>
                   <li className={styles.productGridListView} onClick={() => selectListViewType('listView')}>
                       <img src='images/list-view-icon.svg' alt='list view icon' />
+                  </li>
+                   <li className={styles.productGridListView} onClick={() => selectListViewType('gridView')}>
+                      <img src='images/grid-view-icon.svg' alt='grid view icon' />
                   </li>
                   {/* <li className={styles.productSort}>
                     <select name="cars" id="cars">

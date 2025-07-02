@@ -34,7 +34,7 @@
             margin-left: auto;
         }
         .hdrSignBtn{
-            a{
+            a, span{
                 display: flex;
                 align-items: center;
                 background-color: $secondaryColor;
@@ -77,6 +77,8 @@
                 }
                 i{
                     margin-right: 8px;
+                    position: relative;
+                    top: 2px;
                 }
             }
         }
