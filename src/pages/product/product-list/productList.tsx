@@ -1,10 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import Header from "../../../components/header/header";
-import Footer from "../../../components/footer/footer";
 import styles from "./productList.module.scss";
 import api from "../../../services/api";
 import { ProductListViewType } from "../../../types/productType";
-import noProductImage from "../../../assets/images/No-Product-Image-Available.png";
+import noProductImage from "../../../assets/images/no-product-img.png";
 import Pagination from "@mui/material/Pagination";
 import { ProductListInterface } from "../../../interfaces/productInterface";
 import alert from "../../../services/alert";
@@ -13,7 +12,7 @@ import endpoints from "../../../helpers/endpoints";
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductListInterface[]>([]);
   const [viewListType, setViewListType] =
-    useState<ProductListViewType>("gridView");
+    useState<ProductListViewType>("listView");
   const [page, setPage] = useState<number>(1);
   const [size] = useState<number>(28);
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -23,8 +22,10 @@ const ProductList: React.FC = () => {
   const [downloadingCsv, setDownloadingCsv] = useState<boolean>(false);
   const delay = 300;
   useEffect(() => {
+    
     getProducts();
   }, [page, size, keyword]);
+
   const getProducts = async () => {
     setLoading(true);
     try {
@@ -96,7 +97,6 @@ const ProductList: React.FC = () => {
 
   return (
     <>
-      <Header/>
 
       <div className={styles.productListBdyPrt}>
         
@@ -124,11 +124,11 @@ const ProductList: React.FC = () => {
                        />
                     </form>
                   </li>
-                  <li className={styles.productGridListView} onClick={() => selectListViewType('gridView')}>
-                      <img src='images/grid-view-icon.svg' alt='grid view icon' />
-                  </li>
                   <li className={styles.productGridListView} onClick={() => selectListViewType('listView')}>
                       <img src='images/list-view-icon.svg' alt='list view icon' />
+                  </li>
+                   <li className={styles.productGridListView} onClick={() => selectListViewType('gridView')}>
+                      <img src='images/grid-view-icon.svg' alt='grid view icon' />
                   </li>
                   {/* <li className={styles.productSort}>
                     <select name="cars" id="cars">
@@ -140,7 +140,7 @@ const ProductList: React.FC = () => {
                   </li> */}
                   <li className={styles.productDownloadCsv}>
                     <button onClick={downloadCsv} disabled={downloadingCsv}>
-                      Download all products and CSV
+                      Download all products as CSV
                     </button>
                   </li>
                 </ul>
@@ -227,8 +227,6 @@ const ProductList: React.FC = () => {
         </div>
 
       </div>
-
-      <Footer/>
     </>
   );
 };
