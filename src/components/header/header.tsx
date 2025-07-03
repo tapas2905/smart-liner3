@@ -105,7 +105,7 @@ const Header: React.FC  = () => {
                     <Link to={'/'}>Product List</Link>
                   </li>
                   <li className="dropdown">
-                    <Link to={'#'} onClick={handleNavLinkClick}>Shop Online</Link>
+                    <span className='subLink' onClick={handleNavLinkClick}>Place Purchase Orders</span>
                     <span
                       className="dropdown-toggle"
                       onClick={(e) => handleDropdownToggle(e, 'dropdown01')}
@@ -117,7 +117,7 @@ const Header: React.FC  = () => {
                         <Link to="/add-product">Fill manual form</Link>
                       </li>
                       <li>
-                        <Link to="!#">Automatically fill form from attachment or text</Link>
+                        <Link to="/add-product?attachFile=true">Automatically fill form from attachment or text</Link>
                       </li>
                     </ul>
                   </li>
@@ -132,15 +132,15 @@ const Header: React.FC  = () => {
             ref={dropdownRef}
           >
             <div className={styles.hdrSignBtn}>
-              <Link to={'#'}>
+              <span>
                 <img
                   src={userInfo?.profileImage || noProfileImage}
                   alt='Profile'
                   className={styles.hdrProfileImg}
                 />
-                <span className={styles.hdrProfileName}>{userInfo?.name}</span>
+                <p className={styles.hdrProfileName}>{userInfo?.name}</p>
                 <i className="fa-solid fa-chevron-down hdr-profile-down-arrow"></i>
-              </Link>
+              </span>
             </div>
             {isProfileOpen && (
               <div className={styles.hdrProfileDropdown}>
@@ -167,7 +167,7 @@ const Header: React.FC  = () => {
             <div className={styles.hdrSignBtn}>
               <Link to={'/login'}>
                 <i className="fa-regular fa-circle-user"></i>
-                <span>Sign In</span>
+                Sign In
               </Link>
             </div>
           </div>

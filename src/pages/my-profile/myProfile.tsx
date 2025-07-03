@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
 import styles from './myProfile.module.scss';
 import { Formik, Form, Field, ErrorMessage, FormikProps  } from 'formik';
 import { ProfileInterface } from '../../interfaces/profileInterface';
@@ -85,7 +83,6 @@ const MyProfile: React.FC = () => {
   }
   return (
     <>
-      <Header/>
 
       <div className={styles.myProfileBdyPrt}>
         <div className={styles.container}>
@@ -183,8 +180,6 @@ const MyProfile: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <Footer/>
     </>
   );
 };

@@ -11,8 +11,6 @@ import {
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../../store/userSlice";
 import { AppDispatch } from "../../../store";
-import Header from "../../../components/header/header";
-import Footer from "../../../components/footer/footer";
 import styles from './verifyotp.module.scss';
 import endpoints from "../../../helpers/endpoints";
 
@@ -39,7 +37,7 @@ const VerifyOtp: React.FC = () => {
 
     // Clear query params from URL
     window.history.replaceState({}, document.title, "/verify-otp");
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const handleVerify = async (value: { otp: string }) => {
     if (!value.otp || !email || !token) {
@@ -93,7 +91,6 @@ const VerifyOtp: React.FC = () => {
 
   return (
     <>
-      <Header/>
       <div className={styles.verifyOtpBodyPrt}>
         <div className={styles.container}>
           <Formik
@@ -141,8 +138,6 @@ const VerifyOtp: React.FC = () => {
           </Formik>
         </div>
       </div>
-
-      <Footer/>
     </>
   );
 };

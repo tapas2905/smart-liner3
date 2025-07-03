@@ -2,9 +2,10 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { store } from '../store';
 import { setLogout } from '../store/userSlice';
 
+ const apiBaseUrl = process.env.REACT_APP_API_BASE_URL ?? "";
 // Create a custom Axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: 'https://web-production-788d.up.railway.app/',
+  baseURL: apiBaseUrl,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

@@ -1,28 +1,16 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setLogin } from "../../../store/userSlice";
 import { AppDispatch } from "../../../store";
-
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import alert from "../../../services/alert";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  GoogleOAuthProvider,
-  GoogleLogin,
-  CredentialResponse,
-} from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import api from "../../../services/api";
-import {
-  DecodeGoogleTokenResponse,
-  LoginResponse,
-  SendOtpResponse,
-} from "../../../interfaces/authInterface";
-import { jwtDecode } from "jwt-decode";
-import Header from "../../../components/header/header";
-import Footer from "../../../components/footer/footer";
+import {SendOtpResponse} from "../../../interfaces/authInterface";
 import styles from './login.module.scss';
 import endpoints from "../../../helpers/endpoints";
+import GoogleLoginButton from "../../../components/googl-login-button/googleLoginButton";
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -50,48 +38,6 @@ const Login: React.FC = () => {
     }
   };
 
-  // Handler for successful Google login
-  const handleGoogleSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    setLoading(true);
-    try {
-      // credentialResponse.credential contains the ID token
-      const idToken = credentialResponse.credential;
-      if (idToken) {
-        const decodedToken: DecodeGoogleTokenResponse = jwtDecode(idToken);
-        const payload = {
-          email: decodedToken.email,
-        };
-        const res = await api.post(endpoints.auth.googleLogin, payload);
-        if (res.data) {
-          const data: LoginResponse = res.data;
-          alert(res.data?.message || "You have successfully logged in.", "success");
-          dispatch(
-            setLogin({
-              token: data.accessToken,
-              userInfo: {
-                id: data.user.id,
-                email: data.user.email,
-                name: data.user.name,
-                profileImage: data.user.profilePictureUrl
-              },
-            })
-          );
-        }
-      }
-    } catch (err: any) {
-      alert(err?.response?.data?.detail || "Google login failed", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handler for failed Google login
-  const handleGoogleFailure = (errorResponse?: any) => {
-    alert("Google login failed. Please try again.", "error");
-  };
-
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
@@ -101,8 +47,6 @@ const Login: React.FC = () => {
 
   return (
     <>
-    <Header/>
-
     <div className={styles.loginBodyPrt}>
       <div className={styles.container}>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -118,20 +62,13 @@ const Login: React.FC = () => {
                   <p>Choose how you'd like to sign in</p>
                 </div>
                 <div className={styles.googleSign}>
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleFailure}
-                  />
+                  <GoogleLoginButton setLoading={setLoading} loading={loading} dispatch={dispatch} />
                 </div>
                 <div className={styles.loginOption}>
                   <p>or</p>
                 </div>
                 <div className={styles.loginFormField}>
-                  <label
-                    htmlFor="email"
-                  >
-                    Email Address
-                  </label>
+                  <label htmlFor="email">Email Address</label>
                   <Field
                     name="email"
                     type="email"
@@ -144,11 +81,11 @@ const Login: React.FC = () => {
                     disabled={loading}
                     className={styles.submitBtn}
                   >
-                    {loading ? "Logging in..." : "Continue"}
+                    Continue
                   </button>
                 </div>
                 <p className={styles.loginTermsService}>
-                  <Link to="#">
+                  <Link to="https://www.smartliner-usa.com/pages/our-policies">
                     Policies & Terms of Service
                   </Link>
                 </p>
@@ -158,8 +95,6 @@ const Login: React.FC = () => {
         </GoogleOAuthProvider>
       </div>
     </div>
-
-    <Footer/>
     </>
   );
 };
