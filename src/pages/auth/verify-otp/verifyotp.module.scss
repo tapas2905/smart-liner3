@@ -1,13 +1,13 @@
 @import "../../../assets/styles/shared.scss";
 
-.loginBodyPrt{
+.verifyOtpBodyPrt{
     position: relative;
     background-color: $loginBodyBg;
     padding: 120px 0;
     @media only screen and (max-width:991px){
         padding: 40px 0;
     }
-    .loginFormBox{
+    .verifyOtpFormBox{
         position: relative;
         width: 100%;
         max-width: 515px;
@@ -19,7 +19,7 @@
         @media only screen and (max-width:991px){
             padding: 20px 15px;
         }
-        .loginBoxHdn{
+        .verifyOtpBoxHdn{
             text-align: center;
             margin-bottom: 30px;
             h2{
@@ -35,44 +35,7 @@
                 margin-bottom: 0;
             }
         }
-        .googleSign{
-            width: 100%;
-            background-color: $secondaryColor;
-            padding: 15px 15px;
-            text-align: center;
-            border-radius: 8px;
-            &>div{
-                height: auto !important;
-            }
-        }
-        .loginOption{
-            position: relative;
-            text-align: center;
-            margin-top: 30px;
-            &::before{
-                position: absolute;
-                content: '';
-                width: 45%;
-                height: 1px;
-                background-color: $borderColor;
-                top: 14px;
-                left: 0;
-            }
-            &::after{
-                position: absolute;
-                content: '';
-                width: 45%;
-                height: 1px;
-                background-color: $borderColor;
-                top: 14px;
-                right: 0;
-            }
-            p{
-                font-size: 16px;
-                margin: 0;
-            }
-        }
-        .loginFormField{
+        .verifyOtpFormField{
             margin-top: 30px;
             label{
                 font-size: 16px;
@@ -90,7 +53,7 @@
                 padding: 10px 20px;
                 margin-bottom: 7px;
             }
-            .loginError{
+            .verifyOtpError{
                 position: relative;
                 margin: 0;
                 font-size: 14px;
@@ -113,11 +76,14 @@
                 }
             }
         }
-        .loginTermsService{
+        .verifyOtpTermsService{
             margin: 30px 0 0 0;
             text-align: center;
             font-size: 15px;
             font-weight: 600;
+            span{
+                margin: 0 15px;
+            }
             a{
                 color: $secondaryColor;
                 text-decoration: underline;

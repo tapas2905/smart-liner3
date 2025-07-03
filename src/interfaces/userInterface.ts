@@ -1,8 +1,8 @@
-
 export interface UserInfo {
   id: string;
   email: string;
   name: string;
+  profileImage: string | null;
 }
 
 export interface UserState {
