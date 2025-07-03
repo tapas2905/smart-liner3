@@ -105,7 +105,7 @@ const Header: React.FC  = () => {
                     <Link to={'/'}>Product List</Link>
                   </li>
                   <li className="dropdown">
-                    <Link to={'#'} onClick={handleNavLinkClick}>Shop Online</Link>
+                    <span className='subLink' onClick={handleNavLinkClick}>Place Purchase Orders</span>
                     <span
                       className="dropdown-toggle"
                       onClick={(e) => handleDropdownToggle(e, 'dropdown01')}
