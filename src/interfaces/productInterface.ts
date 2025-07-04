@@ -44,3 +44,6 @@ export interface State {
   name: string;
   code: string;
 }
+export interface GPTText {
+  text: string;
+}

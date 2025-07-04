@@ -6,13 +6,14 @@ import alert from '../../../services/alert';
 import styles from './addProduct.module.scss';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { FormDataField, PurchaseOrder, Country, State } from '../../../interfaces/productInterface';
+import { FormDataField, PurchaseOrder, Country, State, GPTText } from '../../../interfaces/productInterface';
 import api from '../../../services/api';
 import endpoints from '../../../helpers/endpoints';
 import debounce from 'lodash.debounce';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import CircularProgress from '@mui/material/CircularProgress';
+import { FormType } from '../../../types/productType';
 
 const AddProduct: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -21,8 +22,8 @@ const AddProduct: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [poFormLoading, setPoFormLoading] = useState(false);
-  const [isAttachFile, setIsAttachFile] = useState(false);
   const [isUploadFile, setIsUploadFile] = useState(false);
+  const [uploadType, setUploadType] = useState<FormType>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const formikRef = useRef<FormikProps<FormDataField>>(null);
@@ -54,7 +55,14 @@ const AddProduct: React.FC = () => {
   }, [searchQuery, debouncedGetProductSkuList]);
 
   useEffect(()=> {
-    setIsAttachFile(!!searchParams.get("attachFile"));
+    const uploadType = searchParams.get("uploadType");
+    if(uploadType === 'file') {
+      setUploadType('file');
+    } else if (uploadType === 'text') {
+      setUploadType('text');
+    } else {
+      setUploadType(null);
+    }
     getCountries();
     formikRef.current?.setValues(initialFormValues);
   }, [searchParams]);
@@ -80,7 +88,12 @@ const AddProduct: React.FC = () => {
   }
 }
   
-
+  const textFormValidationSchema = Yup.object().shape({
+    text: Yup.string().required("This is required.")
+  });
+  const initialTextForm: GPTText = {
+    text: ""
+  }
   // Yup validation schema for a single item
   const itemSchema = Yup.object().shape({
     itemSkuId: Yup.object().required("Item is required"),
@@ -205,7 +218,7 @@ const AddProduct: React.FC = () => {
           items: transformedItems,
         };
       });
-      setIsAttachFile(false);
+      setUploadType(null);
       formikRef.current?.setValues({ purchaseOrders: patchedPurchaseOrders });
     } catch (error: any) {
       alert(error?.response?.data?.detail || error?.message, "error");
@@ -264,12 +277,27 @@ const AddProduct: React.FC = () => {
     setIsUploadFile(false);
   }
 };
+const extractOrderUsingText = async (value: GPTText) => {
+  setIsUploadFile(true);
+  try {
+    const payload = value;
+    const res = await api.post(endpoints.product.extractOrderUsingText, payload);
+    if(res.data?.orders) {
+      patchPoData(res.data.orders);
+    }
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.detail || err.message || "An unexpected error occurred.";
+    alert(errorMessage, "error");
+  } finally {
+    setIsUploadFile(false);
+  }
+}
 
   
   return (
     <>
     <div className={styles.addProductBdyPrt}>
-      {isAttachFile && (
+      {uploadType === 'file' && (
         <div className={styles.uploadFileBox}>
           <i className="fa-solid fa-cloud-arrow-up"></i>
           <h2>Upload your file here</h2>
@@ -290,8 +318,28 @@ const AddProduct: React.FC = () => {
           </div>
         </div>
       )}
+
+      {uploadType === 'text' && (
+        <div className={styles.autoFillTextArea}>
+          <h2>Automatically fill form from text</h2>
+          <Formik
+            initialValues={initialTextForm}
+            onSubmit={extractOrderUsingText}
+            validationSchema={textFormValidationSchema}
+          >
+            <Form>
+              <label>Enter your text prompt</label>
+              <Field as="textarea" name='text' />
+              <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
+               <button type='submit' disabled={isUploadFile}>
+                {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px" color='inherit'/> Please wait...</span>)}
+               </button>
+            </Form>
+          </Formik>
+        </div>
+      )}
       
-        <div className={styles.container} style={{display: !isAttachFile ? 'block' : 'none'}}>
+        <div className={styles.container} style={{display: !uploadType ? 'block' : 'none'}}>
         <div className={styles.pageTitle}>
           <h1>Please Enter Your Order For Submission</h1>
         </div>
