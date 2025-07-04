@@ -320,16 +320,17 @@ const extractOrderUsingText = async (value: GPTText) => {
       )}
 
       {uploadType === 'text' && (
-        <div>
+        <div className={styles.autoFillTextArea}>
+          <h2>Automatically fill form from text</h2>
           <Formik
-          initialValues={initialTextForm}
-          onSubmit={extractOrderUsingText}
-          validationSchema={textFormValidationSchema}
+            initialValues={initialTextForm}
+            onSubmit={extractOrderUsingText}
+            validationSchema={textFormValidationSchema}
           >
             <Form>
               <label>Enter your text prompt</label>
-              <Field as="textarea" name='text' /> 
-              <ErrorMessage name='text'/>
+              <Field as="textarea" name='text' />
+              <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
                <button type='submit' disabled={isUploadFile}>
                 {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px"/> Please wait...</span>)}
                </button>
