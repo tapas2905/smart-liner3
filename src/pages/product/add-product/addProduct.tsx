@@ -332,7 +332,7 @@ const extractOrderUsingText = async (value: GPTText) => {
               <Field as="textarea" name='text' />
               <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
                <button type='submit' disabled={isUploadFile}>
-                {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px"/> Please wait...</span>)}
+                {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px" color='inherit'/> Please wait...</span>)}
                </button>
             </Form>
           </Formik>
