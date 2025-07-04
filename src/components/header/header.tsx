@@ -117,7 +117,10 @@ const Header: React.FC  = () => {
                         <Link to="/add-product">Fill manual form</Link>
                       </li>
                       <li>
-                        <Link to="/add-product?attachFile=true">Automatically fill form from attachment or text</Link>
+                        <Link to="/add-product?uploadType=file">Automatically fill form from attachment</Link>
+                      </li>
+                       <li>
+                        <Link to="/add-product?uploadType=text">Automatically fill form from text</Link>
                       </li>
                     </ul>
                   </li>

@@ -10,7 +10,7 @@ import api from "../../../services/api";
 import {SendOtpResponse} from "../../../interfaces/authInterface";
 import styles from './login.module.scss';
 import endpoints from "../../../helpers/endpoints";
-import GoogleLoginButton from "../../../components/googl-login-button/googleLoginButton";
+import GoogleLoginButton from "../../../components/google-login-button/googleLoginButton";
 
 const Login: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
