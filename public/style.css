@@ -109,7 +109,7 @@ body.body-fixed::before {
     border-radius: 20px;
     background-color: #259be3;
     left: 0;
-    bottom: -3px;
+    bottom: 1px;
     -webkit-transition: all 0.3s ease-in-out !important;
     -moz-transition: all 0.3s ease-in-out !important;
     -o-transition: all 0.3s ease-in-out !important;

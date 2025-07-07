@@ -49,50 +49,52 @@ const Login: React.FC = () => {
     <>
     <div className={styles.loginBodyPrt}>
       <div className={styles.container}>
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={loginSchema}
-            onSubmit={(value) => handleSubmit(value)}
-          >
-            <Form>
-              <div className={styles.loginFormBox}>
-                <div className={styles.loginBoxHdn}>
-                  <h2>Sign in</h2>
-                  <p>Choose how you'd like to sign in</p>
-                </div>
-                <div className={styles.googleSign}>
-                  <GoogleLoginButton setLoading={setLoading} loading={loading} dispatch={dispatch} />
-                </div>
-                <div className={styles.loginOption}>
-                  <p>or</p>
-                </div>
-                <div className={styles.loginFormField}>
-                  <label htmlFor="email">Email Address</label>
-                  <Field
-                    name="email"
-                    type="email"
-                    placeholder="Enter Your Email Address"
-                  />
-                  <ErrorMessage name="email" component="p" className={styles.loginError} />
+        <div className={styles.verticalMiddleBox}>
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={loginSchema}
+              onSubmit={(value) => handleSubmit(value)}
+            >
+              <Form>
+                <div className={styles.loginFormBox}>
+                  <div className={styles.loginBoxHdn}>
+                    <h2>Sign in</h2>
+                    <p>Choose how you'd like to sign in</p>
+                  </div>
+                  <div className={styles.googleSign}>
+                    <GoogleLoginButton setLoading={setLoading} loading={loading} dispatch={dispatch} />
+                  </div>
+                  <div className={styles.loginOption}>
+                    <p>or</p>
+                  </div>
+                  <div className={styles.loginFormField}>
+                    <label htmlFor="email">Email Address</label>
+                    <Field
+                      name="email"
+                      type="email"
+                      placeholder="Enter Your Email Address"
+                    />
+                    <ErrorMessage name="email" component="p" className={styles.loginError} />
 
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={styles.submitBtn}
-                  >
-                    Continue
-                  </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={styles.submitBtn}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                  <p className={styles.loginTermsService}>
+                    <Link to="https://www.smartliner-usa.com/pages/our-policies">
+                      Policies & Terms of Service
+                    </Link>
+                  </p>
                 </div>
-                <p className={styles.loginTermsService}>
-                  <Link to="https://www.smartliner-usa.com/pages/our-policies">
-                    Policies & Terms of Service
-                  </Link>
-                </p>
-              </div>
-            </Form>
-          </Formik>
-        </GoogleOAuthProvider>
+              </Form>
+            </Formik>
+          </GoogleOAuthProvider>
+        </div>
       </div>
     </div>
     </>

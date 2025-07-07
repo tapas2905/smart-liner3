@@ -297,45 +297,55 @@ const extractOrderUsingText = async (value: GPTText) => {
   return (
     <>
     <div className={styles.addProductBdyPrt}>
-      {uploadType === 'file' && (
-        <div className={styles.uploadFileBox}>
-          <i className="fa-solid fa-cloud-arrow-up"></i>
-          <h2>Upload your file here</h2>
-          <p>Files supported: TXT, PDF, EXCEL, EML</p>
-          <div className={styles.addProductInputFileField}>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleChange}
-              accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .txt, text/plain, .pdf, application/pdf, .eml, message/rfc822"
-              style={{ display: "none" }}
-            />
+      
+          {uploadType === 'file' && (
+            <div className={styles.verticalMiddleBox}>
+              <div className={styles.container}>
+                <div className={styles.uploadFileBox}>
+                  <i className="fa-solid fa-cloud-arrow-up"></i>
+                  <h2>Upload your file here</h2>
+                  <p>Files supported: TXT, PDF, EXCEL, EML</p>
+                  <div className={styles.addProductInputFileField}>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleChange}
+                      accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .txt, text/plain, .pdf, application/pdf, .eml, message/rfc822"
+                      style={{ display: "none" }}
+                    />
 
-            <button type="button" onClick={uploadFileClick} disabled={isUploadFile}>
-              {!isUploadFile ? 'Browse' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px"/> Please wait...</span>)}
-            </button>
+                    <button type="button" onClick={uploadFileClick} disabled={isUploadFile}>
+                      {!isUploadFile ? 'Browse' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px"/> Please wait...</span>)}
+                    </button>
 
-          </div>
-        </div>
-      )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        
 
       {uploadType === 'text' && (
-        <div className={styles.autoFillTextArea}>
-          <h2>Enter Purchase Order Details</h2>
-          <Formik
-            initialValues={initialTextForm}
-            onSubmit={extractOrderUsingText}
-            validationSchema={textFormValidationSchema}
-          >
-            <Form>
-              <label>Please include SKU, quantity, and recipient information</label>
-              <Field as="textarea" name='text' />
-              <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
-               <button type='submit' disabled={isUploadFile}>
-                {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px" color='inherit'/> Please wait...</span>)}
-               </button>
-            </Form>
-          </Formik>
+        <div className={styles.container}>
+          <div className={styles.verticalMiddleBox}>
+            <div className={styles.autoFillTextArea}>
+              <h2>Enter Purchase Order Details</h2>
+              <Formik
+                initialValues={initialTextForm}
+                onSubmit={extractOrderUsingText}
+                validationSchema={textFormValidationSchema}
+              >
+                <Form>
+                  <label>Please include SKU, quantity, and recipient information</label>
+                  <Field as="textarea" name='text' />
+                  <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
+                  <button type='submit' disabled={isUploadFile}>
+                    {!isUploadFile ? 'Submit' : (<span className={styles.uploadBtnLoader}><CircularProgress size="22px" color='inherit'/> Please wait...</span>)}
+                  </button>
+                </Form>
+              </Formik>
+            </div>
+          </div>
         </div>
       )}
       
