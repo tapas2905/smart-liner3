@@ -299,8 +299,8 @@ const extractOrderUsingText = async (value: GPTText) => {
     <div className={styles.addProductBdyPrt}>
       
           {uploadType === 'file' && (
-            <div className={styles.verticalMiddleBox}>
-              <div className={styles.container}>
+            <div className={styles.container}>
+              <div className={styles.verticalMiddleBox}>
                 <div className={styles.uploadFileBox}>
                   <i className="fa-solid fa-cloud-arrow-up"></i>
                   <h2>Upload your file here</h2>
