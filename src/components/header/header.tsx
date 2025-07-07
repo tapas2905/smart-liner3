@@ -117,10 +117,10 @@ const Header: React.FC  = () => {
                         <Link to="/add-product">Fill manual form</Link>
                       </li>
                       <li>
-                        <Link to="/add-product?uploadType=file">Automatically fill form from attachment</Link>
+                        <Link to="/add-product?uploadType=file">Create PO from Attachment</Link>
                       </li>
                        <li>
-                        <Link to="/add-product?uploadType=text">Automatically fill form from text</Link>
+                        <Link to="/add-product?uploadType=text">Create PO from raw text</Link>
                       </li>
                     </ul>
                   </li>

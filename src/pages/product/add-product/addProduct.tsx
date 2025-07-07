@@ -89,7 +89,7 @@ const AddProduct: React.FC = () => {
 }
   
   const textFormValidationSchema = Yup.object().shape({
-    text: Yup.string().required("This is required.")
+    text: Yup.string().required("Please enter the information.")
   });
   const initialTextForm: GPTText = {
     text: ""
@@ -321,14 +321,14 @@ const extractOrderUsingText = async (value: GPTText) => {
 
       {uploadType === 'text' && (
         <div className={styles.autoFillTextArea}>
-          <h2>Automatically fill form from text</h2>
+          <h2>Enter Purchase Order Details</h2>
           <Formik
             initialValues={initialTextForm}
             onSubmit={extractOrderUsingText}
             validationSchema={textFormValidationSchema}
           >
             <Form>
-              <label>Enter your text prompt</label>
+              <label>Please include SKU, quantity, and recipient information</label>
               <Field as="textarea" name='text' />
               <ErrorMessage name='text' component="p" className={styles.errorMessage}/>
                <button type='submit' disabled={isUploadFile}>
